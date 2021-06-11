@@ -1,0 +1,16 @@
+console: "&cThis command can be performed from players only."
+
+subcommands:
+  not-found: "&cThis subcommand does not exists."
+  edit: "&cTry to use /multilang edit LangName"
+
+already: "&7You already have this &9language&7 as your &9primary language&7."
+current: "&7Your locale is: &9"
+current-other: "&9%s&7's locale is: &9%s" # %s is the variable, the first time is the player name, the second time is the locale
+not-found: "&cThis player does not exists."
+lang-not-found: "&7This language does not exists."
+changed: "&7Language changed to &9%s&7."
+
+gui:
+  title: "&7Languages"
+  current: "&7Current language: &9"

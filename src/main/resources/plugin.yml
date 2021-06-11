@@ -29,3 +29,5 @@ permissions:
   multilang.admin:
     default: op
     description: Grants all /multilangadmin subcommands
+    children:
+      multilang.command.get.other: true

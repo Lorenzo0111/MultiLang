@@ -6,6 +6,7 @@ import me.lorenzo0111.multilang.api.impl.MultiLangAPI;
 import me.lorenzo0111.multilang.commands.AdminLangCommand;
 import me.lorenzo0111.multilang.commands.MultiLangCommand;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
+import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.pluginslib.command.Customization;
 import me.lorenzo0111.pluginslib.config.ConfigExtractor;
 import me.lorenzo0111.rocketplaceholders.api.RocketPlaceholdersAPI;
@@ -22,7 +23,9 @@ import java.util.Objects;
 public final class PluginLoader {
     private final MultiLangPlugin plugin;
     private FileConfiguration guiConfig;
+    private FileConfiguration messagesConfig;
     private File guiFile;
+    private File messagesFile;
 
     public PluginLoader(MultiLangPlugin plugin) {
         this.plugin = plugin;
@@ -77,7 +80,18 @@ public final class PluginLoader {
         }
 
         this.reloadGui();
+    }
 
+    public void messages() {
+        plugin.getLogger().info("Loading messages.yml..");
+        messagesFile = new File(plugin.getDataFolder(),"messages.yml");
+        if (!messagesFile.exists()) {
+            guiFile = new ConfigExtractor(MultiLangPlugin.class,plugin.getDataFolder(),"messages.yml")
+                    .extract();
+        }
+
+        this.reloadMessages();
+        MessagesManager.setPlugin(plugin);
     }
 
     public void reloadGui() {
@@ -90,11 +104,25 @@ public final class PluginLoader {
         }
     }
 
+    public void reloadMessages() {
+        messagesConfig = new YamlConfiguration();
+        try {
+            Objects.requireNonNull(messagesFile);
+            messagesConfig.load(messagesFile);
+        } catch (IOException | InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
+    }
+
     public MultiLangPlugin getPlugin() {
         return plugin;
     }
 
     public FileConfiguration getGuiConfig() {
         return guiConfig;
+    }
+
+    public FileConfiguration getMessagesConfig() {
+        return messagesConfig;
     }
 }

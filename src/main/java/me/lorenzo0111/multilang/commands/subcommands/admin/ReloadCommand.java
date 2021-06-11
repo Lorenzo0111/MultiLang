@@ -34,6 +34,7 @@ public class ReloadCommand extends SubCommand {
             plugin.getConfigManager().unregisterAll();
             plugin.getConfigManager().register();
             plugin.getLoader().reloadGui();
+            plugin.getLoader().reloadMessages();
 
             if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;

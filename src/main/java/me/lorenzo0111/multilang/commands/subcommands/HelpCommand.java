@@ -1,6 +1,7 @@
 package me.lorenzo0111.multilang.commands.subcommands;
 
 import me.lorenzo0111.multilang.commands.SubCommand;
+import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.pluginslib.command.Command;
 import org.bukkit.command.CommandSender;
 
@@ -26,7 +27,7 @@ public class HelpCommand extends SubCommand {
         if (args.length == 2) {
             String description = commands.get(args[1]);
             if (description == null) {
-                sender.sendMessage(this.format("&cThis subcommand does not exists."));
+                sender.sendMessage(this.format(MessagesManager.get("subcommands.not-found")));
                 return;
             }
             sender.sendMessage(this.formatHelp(args[1],description));

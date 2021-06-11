@@ -2,6 +2,7 @@ package me.lorenzo0111.multilang.commands.subcommands;
 
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
+import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.multilang.utils.GuiUtils;
 import me.lorenzo0111.pluginslib.command.Command;
 import me.lorenzo0111.pluginslib.command.annotations.NoArguments;
@@ -33,20 +34,20 @@ public class GuiCommand extends SubCommand {
     @Override
     public void handleSubcommand(CommandSender sender, String[] args) {
         if (!(sender instanceof Player)) {
-            sender.sendMessage(this.format("&cThis command can be performed from players only."));
+            sender.sendMessage(this.format(MessagesManager.get("console")));
             return;
         }
 
         final LocalizedPlayer player = LocalizedPlayer.from((Player) sender);
 
-        PaginatedGui gui = GuiUtils.createGui(this.format(""), "&7Languages");
+        PaginatedGui gui = GuiUtils.createGui(this.format(""), MessagesManager.get("gui.title"));
         GuiUtils.setPageItems(gui);
 
         gui.setDefaultClickAction(event -> event.setCancelled(true));
 
         gui.setItem(22,
                 ItemBuilder.from(Material.TORCH)
-                        .setName("§7Current language: §9" + player.getLocale().toString())
+                        .setName(MessagesManager.get("gui.current") + player.getLocale().toString())
                         .asGuiItem()
         );
         

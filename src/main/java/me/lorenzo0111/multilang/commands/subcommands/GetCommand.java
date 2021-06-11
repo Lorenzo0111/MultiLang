@@ -2,6 +2,7 @@ package me.lorenzo0111.multilang.commands.subcommands;
 
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
+import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.pluginslib.command.Command;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
 import org.bukkit.Bukkit;
@@ -35,17 +36,19 @@ public class GetCommand extends SubCommand {
         Player player = (Player) sender;
 
         if (args.length == 1) {
-            sender.sendMessage(this.format("&7Your locale is: &9" + LocalizedPlayer.from(player).getLocale().getName()));
+            sender.sendMessage(this.format(MessagesManager.get("current") + LocalizedPlayer.from(player).getLocale().getName()));
             return;
         }
 
-        Player target = Bukkit.getPlayer(args[1]);
+        if (player.hasPermission("multilang.command.get.other")) {
+            Player target = Bukkit.getPlayer(args[1]);
 
-        if (target == null) {
-            sender.sendMessage(this.format("&cThis player does not exists."));
-            return;
+            if (target == null) {
+                sender.sendMessage(this.format(MessagesManager.get("not-found")));
+                return;
+            }
+
+            sender.sendMessage(this.format(MessagesManager.get("current-other"), target.getName(), LocalizedPlayer.from(target).getLocale().getName()));
         }
-
-        sender.sendMessage(this.format("&9%s&7's locale is: &9%s", target.getName(), LocalizedPlayer.from(target).getLocale().getName()));
     }
 }

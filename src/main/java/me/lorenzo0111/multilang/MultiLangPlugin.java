@@ -7,6 +7,7 @@ import me.lorenzo0111.multilang.data.StorageType;
 import me.lorenzo0111.multilang.database.DatabaseManager;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
+import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
@@ -62,6 +63,7 @@ public final class MultiLangPlugin extends JavaPlugin {
         loader.commands();
         loader.api();
         loader.gui();
+        loader.messages();
         loader.metrics(); // TODO: Finish
 
         this.resetConnection();
