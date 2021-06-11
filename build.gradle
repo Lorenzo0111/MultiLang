@@ -33,7 +33,7 @@ dependencies {
 
 shadowJar {
     archiveFileName.set("${baseName}-${version}.${extension}")
-    destinationDirectory = file("C:\\Users\\loren\\AppData\\Roaming\\VisualSpigot\\minecraft_servers\\VSFC3ti5LC\\plugins")
+    // destinationDirectory = file("C:\\Users\\loren\\AppData\\Roaming\\VisualSpigot\\minecraft_servers\\VSFC3ti5LC\\plugins")
 }
 
 
