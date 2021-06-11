@@ -1,0 +1,27 @@
+prefix: "&8[&9MultiLang&8] &r"
+
+# Storage types: FILE, MYSQL
+storage: "FILE"
+mysql:
+  # Database information
+  ip: 0.0.0.0
+  port: 3306
+  username: ""
+  password: ""
+  database: ""
+  jdbc: jdbc:sqlite:C:\\Users\\loren\\AppData\\Roaming\\VisualSpigot\\minecraft_servers\\VSFC3ti5LC\\plugins\\RocketPlaceholders\\database.sqlite # Do not edit this if you don't know what you are doing.
+
+default: "english"
+
+default-base: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI4OWQ1YjE3ODYyNmVhMjNkMGIwYzNkMmRmNWMwODVlODM3NTA1NmJmNjg1YjVlZDViYjQ3N2ZlODQ3MmQ5NCJ9fX0="
+
+languages:
+  - "english"
+  - "italiano"
+
+strings:
+  1:
+    identifier: "example"
+    default: "Hello world"
+    locales:
+      italiano: "Ciao mondo"

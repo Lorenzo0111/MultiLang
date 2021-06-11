@@ -1,0 +1,31 @@
+name: MultiLang
+version: 1.0
+main: me.lorenzo0111.multilang.MultiLangPlugin
+api-version: 1.13
+author: Lorenzo0111
+depend: [ PlaceholderAPI, RocketPlaceholders ]
+commands:
+  multilang:
+    description: Lang command
+    aliases:
+      - lang
+      - mlang
+      - changelang
+    usage: /multilang <action> [<language>]
+  multilangadmin:
+    description: Admin command
+    aliases:
+      - alang
+      - adminlang
+permissions:
+  multilang.default:
+    default: true
+    description: Grants all /multilang subcommands
+    children:
+      multilang.command: true
+      multilang.command.get: true
+      multilang.command.gui: true
+      multilang.command.edit: true
+  multilang.admin:
+    default: op
+    description: Grants all /multilangadmin subcommands

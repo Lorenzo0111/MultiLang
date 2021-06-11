@@ -1,0 +1,51 @@
+plugins {
+    id 'java'
+    id "com.github.johnrengelman.shadow" version "7.0.0"
+}
+
+group = 'me.lorenzo0111'
+version = '1.0'
+
+apply from: 'https://cdn.rocketplugins.space/spigot'
+
+group = 'me.Lorenzo0111'
+version = '1.0'
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+repositories {
+    mavenCentral()
+    maven { url 'https://jitpack.io' }
+    maven { url 'https://repo.codemc.org/repository/maven-snapshots/' }
+    maven { url 'https://repo.repsy.io/mvn/lorenzo0111/public' }
+}
+
+dependencies {
+    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
+    compileOnly 'me.Lorenzo0111:RocketPlaceholders:1.9.1'
+    compileOnly "me.mattstudios.utils:matt-framework-gui:2.0.3.3"
+    compileOnly 'com.github.cryptomorin:XSeries:7.9.1.1'
+    implementation 'me.lorenzo0111:pluginslib:1.2.2'
+}
+
+shadowJar {
+    archiveFileName.set("${baseName}-${version}.${extension}")
+    destinationDirectory = file("C:\\Users\\loren\\AppData\\Roaming\\VisualSpigot\\minecraft_servers\\VSFC3ti5LC\\plugins")
+}
+
+
+javadoc {
+    options.links(
+            'https://javadoc.io/static/org.jetbrains/annotations/20.1.0/',
+            'https://docs.oracle.com/javase/8/docs/api/',
+            'https://papermc.io/javadocs/paper/1.16/'
+    )
+    source = sourceSets.main.allJava
+    include("**/api/*")
+    destinationDir = new File("${System.getenv("javadocs")}/multilang/${version}")
+}
+
+tasks.build.dependsOn tasks.shadowJar
