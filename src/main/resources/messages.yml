@@ -1,7 +1,7 @@
 console: "&cThis command can be performed from players only."
 
 subcommands:
-  not-found: "&cThis subcommand does not exists."
+  not-found: "&cThis subcommand does not exist."
   edit: "&cTry to use /multilang edit LangName"
 
 already: "&7You already have this &9language&7 as your &9primary language&7."
