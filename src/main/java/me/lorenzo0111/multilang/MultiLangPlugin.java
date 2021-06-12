@@ -1,3 +1,27 @@
+/*
+ * This file is part of MultiLang, licensed under the MIT License.
+ *
+ * Copyright (c) Lorenzo0111
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package me.lorenzo0111.multilang;
 
 import me.lorenzo0111.multilang.api.objects.Cache;
@@ -7,7 +31,6 @@ import me.lorenzo0111.multilang.data.StorageType;
 import me.lorenzo0111.multilang.database.DatabaseManager;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
-import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
@@ -16,6 +39,7 @@ import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
 import me.lorenzo0111.pluginslib.dependency.DependencyManager;
 import me.lorenzo0111.pluginslib.dependency.objects.Dependency;
+import me.lorenzo0111.pluginslib.updater.UpdateChecker;
 import me.lorenzo0111.rocketplaceholders.api.RocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -24,7 +48,10 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.UUID;
 
 public final class MultiLangPlugin extends JavaPlugin {
     private RocketPlaceholdersAPI rocketPlaceholdersAPI;
@@ -38,6 +65,7 @@ public final class MultiLangPlugin extends JavaPlugin {
     private StorageType type;
     private DependencyManager manager;
     public final static String MAVEN = "https://repo1.maven.org/maven2/";
+    private UpdateChecker updater;
 
     @Override
     public void onEnable() {
@@ -64,7 +92,9 @@ public final class MultiLangPlugin extends JavaPlugin {
         loader.api();
         loader.gui();
         loader.messages();
-        loader.metrics(); // TODO: Finish
+        loader.metrics();
+
+        this.updater = new UpdateChecker(this,93235,"https://www.spigotmc.org/resources/93235/",null);
 
         this.resetConnection();
 
@@ -201,5 +231,9 @@ public final class MultiLangPlugin extends JavaPlugin {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
+    }
+
+    public UpdateChecker getUpdater() {
+        return updater;
     }
 }
