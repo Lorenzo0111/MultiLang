@@ -149,19 +149,23 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.type = StorageType.valueOf(this.getConfig("storage"));
         Objects.requireNonNull(this.type, "Invalid storage type");
 
-        final Connection connection = DatabaseManager.createConnection(this);
-        if (connection == null) throw new ReloadException("Connection cannot be null");
+        Objects.requireNonNull(this.getStorageType()
+                .install(this))
+                .thenRun(() -> {
+                    final Connection connection = DatabaseManager.createConnection(this);
+                    if (connection == null) throw new ReloadException("Connection cannot be null");
 
-        Table playersTable = new Table
-                (this,
-                connection,
-                "players",
-                Arrays.asList(
-                        new Column("uuid", "STRING"),
-                        new Column("locale", "STRING")
-                ));
+                    Table playersTable = new Table
+                            (this,
+                                    connection,
+                                    "players",
+                                    Arrays.asList(
+                                            new Column("uuid", "STRING"),
+                                            new Column("locale", "STRING")
+                                    ));
 
-        this.databaseManager = new DatabaseManager(this, Collections.singletonList(playersTable), connection);
+                    this.databaseManager = new DatabaseManager(this, Collections.singletonList(playersTable), connection);
+                });
     }
 
     public StorageManager getStorage() {

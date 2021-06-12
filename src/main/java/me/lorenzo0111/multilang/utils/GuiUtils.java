@@ -5,7 +5,6 @@ import me.mattstudios.mfgui.gui.components.xseries.XMaterial;
 import me.mattstudios.mfgui.gui.guis.GuiItem;
 import me.mattstudios.mfgui.gui.guis.PaginatedGui;
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.Objects;
@@ -41,7 +40,7 @@ public class GuiUtils {
         gui.setItem(21,left);
         gui.setItem(23,right);
 
-        gui.getFiller().fillBottom(ItemBuilder.from(Material.GLASS_PANE).setName("§r").asGuiItem());
+        gui.getFiller().fillBottom(ItemBuilder.from(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()).setName("§r").asGuiItem());
     }
 
 }
