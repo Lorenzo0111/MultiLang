@@ -9,7 +9,7 @@ mysql:
   username: ""
   password: ""
   database: ""
-  jdbc: jdbc:sqlite:C:\\Users\\loren\\AppData\\Roaming\\VisualSpigot\\minecraft_servers\\VSFC3ti5LC\\plugins\\RocketPlaceholders\\database.sqlite # Do not edit this if you don't know what you are doing.
+  ssl: false
 
 default: "english"
 
