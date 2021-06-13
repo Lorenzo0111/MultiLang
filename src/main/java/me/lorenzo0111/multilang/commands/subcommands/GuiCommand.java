@@ -24,6 +24,9 @@
 
 package me.lorenzo0111.multilang.commands.subcommands;
 
+import com.cryptomorin.xseries.XMaterial;
+import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.guis.PaginatedGui;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
@@ -31,11 +34,11 @@ import me.lorenzo0111.multilang.utils.GuiUtils;
 import me.lorenzo0111.pluginslib.command.Command;
 import me.lorenzo0111.pluginslib.command.annotations.NoArguments;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
-import me.mattstudios.mfgui.gui.components.util.ItemBuilder;
-import me.mattstudios.mfgui.gui.components.xseries.XMaterial;
-import me.mattstudios.mfgui.gui.guis.PaginatedGui;
+import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Objects;
 
 public class GuiCommand extends SubCommand {
 
@@ -70,8 +73,8 @@ public class GuiCommand extends SubCommand {
         gui.setDefaultClickAction(event -> event.setCancelled(true));
 
         gui.setItem(22,
-                ItemBuilder.from(XMaterial.TORCH.parseItem())
-                        .setName(MessagesManager.get("gui.current") + player.getLocale().toString())
+                ItemBuilder.from(Objects.requireNonNull(XMaterial.TORCH.parseItem()))
+                        .name(Component.text(MessagesManager.get("gui.current") + player.getLocale().toString()))
                         .asGuiItem()
         );
         
@@ -79,10 +82,10 @@ public class GuiCommand extends SubCommand {
             String base = this.getPlugin().getLoader().getGuiConfig().getString("base." + locale);
 
             gui.addItem(ItemBuilder
-                    .from(XMaterial.PLAYER_HEAD.parseItem())
-                    .setName(locale)
-                    .setLore("§7Click to set")
-                    .setSkullTexture(base != null ? base : this.getPlugin().getConfig("default-base"))
+                    .skull()
+                    .name(Component.text(locale))
+                    .lore(Component.text("§7Click to set"))
+                    .texture(base != null ? base : this.getPlugin().getConfig("default-base"))
                     .asGuiItem(event -> {
 
                         EditCommand.setLang(player,locale,this);

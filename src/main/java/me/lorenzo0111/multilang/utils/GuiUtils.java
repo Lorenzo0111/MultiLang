@@ -24,10 +24,11 @@
 
 package me.lorenzo0111.multilang.utils;
 
-import me.mattstudios.mfgui.gui.components.util.ItemBuilder;
-import me.mattstudios.mfgui.gui.components.xseries.XMaterial;
-import me.mattstudios.mfgui.gui.guis.GuiItem;
-import me.mattstudios.mfgui.gui.guis.PaginatedGui;
+import com.cryptomorin.xseries.XMaterial;
+import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.guis.GuiItem;
+import dev.triumphteam.gui.guis.PaginatedGui;
+import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
@@ -41,22 +42,22 @@ public class GuiUtils {
     }
 
     public static PaginatedGui createGui(String prefix, String title) {
-        final PaginatedGui gui = new PaginatedGui(3, ChatColor.translateAlternateColorCodes('&',prefix + title));
+        final PaginatedGui gui = new PaginatedGui(3, Component.text(ChatColor.translateAlternateColorCodes('&',prefix + title)));
         gui.setDefaultClickAction(a -> a.setCancelled(true));
         return gui;
     }
 
     public static void setPageItems(PaginatedGui gui) {
-        ItemStack item = Objects.requireNonNull(XMaterial.ARROW.parseItem(true), "Arrow does not exists.");
+        ItemStack item = Objects.requireNonNull(XMaterial.ARROW.parseItem(), "Arrow does not exists.");
 
         GuiItem left = ItemBuilder.from(item)
-                .setName("§8§l» §7Previous")
+                .name(Component.text("§8§l» §7Previous"))
                 .asGuiItem(e -> {
                     e.setCancelled(true);
                     gui.previous();
                 });
         GuiItem right = ItemBuilder.from(item)
-                .setName("§8§l» §7Next")
+                .name(Component.text("§8§l» §7Next"))
                 .asGuiItem(e -> {
                     e.setCancelled(true);
                     gui.next();
@@ -64,7 +65,7 @@ public class GuiUtils {
         gui.setItem(21,left);
         gui.setItem(23,right);
 
-        gui.getFiller().fillBottom(ItemBuilder.from(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem()).setName("§r").asGuiItem());
+        gui.getFiller().fillBottom(ItemBuilder.from(Objects.requireNonNull(XMaterial.GRAY_STAINED_GLASS_PANE.parseItem())).name(Component.text("§r")).asGuiItem());
     }
 
 }

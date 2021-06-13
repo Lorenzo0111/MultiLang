@@ -26,6 +26,7 @@ plugins {
     id 'java'
     id "com.github.johnrengelman.shadow" version "7.0.0"
     id 'maven-publish'
+    id 'io.github.slimjar' version '1.2.0'
 }
 
 group = 'me.lorenzo0111'
@@ -46,18 +47,31 @@ repositories {
     maven { url 'https://jitpack.io' }
     maven { url 'https://repo.codemc.org/repository/maven-snapshots/' }
     maven { url 'https://repo.repsy.io/mvn/lorenzo0111/public' }
+    maven { url = "https://repo.mattstudios.me/artifactory/public/" }
+    maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
 }
 
 dependencies {
-    compileOnly 'com.github.MilkBowl:VaultAPI:1.7'
-    compileOnly 'me.Lorenzo0111:RocketPlaceholders:1.9.1'
-    compileOnly "me.mattstudios.utils:matt-framework-gui:2.0.3.3"
-    compileOnly 'com.github.cryptomorin:XSeries:7.9.1.1'
-    implementation 'me.lorenzo0111:pluginslib:1.2.2'
+    compileOnly('com.github.MilkBowl:VaultAPI:1.7')
+    compileOnly('me.Lorenzo0111:RocketPlaceholders:1.9.1')
+    slim("dev.triumphteam:triumph-gui:3.0.0")
+    slim('com.github.cryptomorin:XSeries:7.9.1.1')
+    implementation('me.lorenzo0111:pluginslib:1.2.3')
+    slim('net.kyori:adventure-api:4.8.1')
+    slim('net.kyori:adventure-text-serializer-legacy:4.8.1')
+    slim('mysql:mysql-connector-java:8.0.24')
+    slim('org.xerial:sqlite-jdbc:3.34.0')
+    slim('com.zaxxer:HikariCP:4.0.3')
+}
+
+slimJar {
+    relocate('net.kyori','me.lorenzo0111.multilang.libs')
 }
 
 shadowJar {
-    archiveFileName.set("${baseName}-${version}.${extension}")
+    minimize()
+    archiveFileName = "${project.name}-${project.version}.jar"
+    relocate('io.github.slimjar','me.lorenzo0111.multilang.libs.slimjar')
     // destinationDirectory = file("C:\\Users\\loren\\AppData\\Roaming\\VisualSpigot\\minecraft_servers\\VSFC3ti5LC\\plugins")
 }
 

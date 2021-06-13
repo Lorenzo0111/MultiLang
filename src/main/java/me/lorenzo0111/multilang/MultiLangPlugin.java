@@ -37,15 +37,16 @@ import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
 import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
-import me.lorenzo0111.pluginslib.dependency.DependencyManager;
-import me.lorenzo0111.pluginslib.dependency.objects.Dependency;
+import me.lorenzo0111.pluginslib.dependency.beta.SlimJarDependencyManager;
 import me.lorenzo0111.pluginslib.updater.UpdateChecker;
 import me.lorenzo0111.rocketplaceholders.api.RocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
-import java.net.MalformedURLException;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
@@ -63,15 +64,19 @@ public final class MultiLangPlugin extends JavaPlugin {
     private File cacheFolder;
     private StorageManager storage;
     private StorageType type;
-    private DependencyManager manager;
     public final static String MAVEN = "https://repo1.maven.org/maven2/";
     private UpdateChecker updater;
 
     @Override
-    public void onEnable() {
+    public void onLoad() {
         instance = this;
         this.saveDefaultConfig();
         this.loadDependencies();
+    }
+
+    @Override
+    public void onEnable() {
+        this.loadPlugin();
     }
 
     private void loadPlugin() {
@@ -179,23 +184,19 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.type = StorageType.valueOf(this.getConfig("storage"));
         Objects.requireNonNull(this.type, "Invalid storage type");
 
-        Objects.requireNonNull(this.getStorageType()
-                .install(this))
-                .thenRun(() -> {
-                    final Connection connection = DatabaseManager.createConnection(this);
-                    if (connection == null) throw new ReloadException("Connection cannot be null");
+        final Connection connection = DatabaseManager.createConnection(this);
+        if (connection == null) throw new ReloadException("Connection cannot be null");
 
-                    Table playersTable = new Table
-                            (this,
-                                    connection,
-                                    "players",
-                                    Arrays.asList(
-                                            new Column("uuid", "STRING"),
-                                            new Column("locale", "STRING")
-                                    ));
+        Table playersTable = new Table
+                (this,
+                        connection,
+                        "players",
+                        Arrays.asList(
+                                new Column("uuid", "STRING"),
+                                new Column("locale", "STRING")
+                        ));
 
-                    this.databaseManager = new DatabaseManager(this, Collections.singletonList(playersTable), connection);
-                });
+        this.databaseManager = new DatabaseManager(this, Collections.singletonList(playersTable), connection);
     }
 
     public StorageManager getStorage() {
@@ -206,29 +207,16 @@ public final class MultiLangPlugin extends JavaPlugin {
         return type;
     }
 
-    public DependencyManager getDependencyManager() {
-        return manager;
-    }
-
     private void loadDependencies() {
-        long time = System.currentTimeMillis();
         this.getLogger().info("Loading libraries..");
-        File libsFolder = new File(this.getDataFolder(), "libs");
-        if (libsFolder.mkdirs()) {
-            this.getLogger().info("Libs folder created");
-        }
-
-        this.manager = new DependencyManager(this, libsFolder);
+        this.getLogger().info("Note: This might take a few minutes on first run.");
 
         try {
-            manager.addDependency(new Dependency("me.mattstudios.utils", "matt-framework-gui", "2.0.3.3", MAVEN));
-            manager.addDependency(new Dependency("com.github.cryptomorin", "XSeries", "7.9.1.1", MAVEN));
-            manager.installAll()
-                    .thenRun(() -> {
-                        this.getLogger().info(String.format("Loaded all dependencies in %sms.", System.currentTimeMillis() - time));
-                        this.loadPlugin();
-                    });
-        } catch (MalformedURLException e) {
+            long time = new SlimJarDependencyManager(this)
+                    .build();
+            this.getLogger().info(String.format("Loaded libraries in %sms.", time));
+        } catch (ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException | IOException e) {
+            this.getLogger().severe("Unable to load dependencies...");
             e.printStackTrace();
         }
     }

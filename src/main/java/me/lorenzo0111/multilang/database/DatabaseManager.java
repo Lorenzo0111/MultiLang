@@ -52,19 +52,13 @@ public final class DatabaseManager {
 
     @Nullable
     public static Connection createConnection(MultiLangPlugin plugin) {
-        CompletableFuture<Void> completable = plugin.getStorageType()
-                .install(plugin);
-
-        Objects.requireNonNull(completable);
-
-        completable.thenRun(() -> {
-            try {
-                plugin.getStorageType()
-                        .getDriver();
-            } catch(DriverException ex) {
-                plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
-            }
-        });
+        try {
+            plugin.getStorageType()
+                    .getDriver();
+        } catch(DriverException ex) {
+            plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
+            return null;
+        }
 
         String jdbc = null;
 
