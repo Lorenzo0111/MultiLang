@@ -32,6 +32,8 @@ import me.lorenzo0111.pluginslib.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
+import java.sql.SQLException;
+
 public class ReloadCommand extends SubCommand {
 
     public ReloadCommand(Command command) {
@@ -67,7 +69,7 @@ public class ReloadCommand extends SubCommand {
 
 
             commandSender.sendMessage(this.format(String.format("&7Plugin reloaded in &9%sms", System.currentTimeMillis() - time)));
-        } catch (ReloadException ex) {
+        } catch (ReloadException | SQLException ex) {
             if (commandSender instanceof Player) {
                 XSound.play((Player) commandSender,"BLOCK_ANVIL_PLACE");
             }

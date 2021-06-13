@@ -24,6 +24,8 @@
 
 package me.lorenzo0111.multilang.database;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
@@ -35,66 +37,68 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public final class DatabaseManager {
-    private final Connection connection;
+    private final HikariDataSource connection;
     private final List<Table> tables;
     private final MultiLangPlugin plugin;
     private final Table usersTable;
 
     @Nullable
-    public static Connection createConnection(MultiLangPlugin plugin) {
+    public static HikariDataSource createConnection(MultiLangPlugin plugin) {
+        HikariConfig config = new HikariConfig();
+
+        config.setMaximumPoolSize(10);
+        config.setMinimumIdle(10);
+        config.setMaxLifetime(1800000);
+        config.setConnectionTimeout(5000);
+
+        Class<?> driver;
+
         try {
-            plugin.getStorageType()
+            driver = plugin.getStorageType()
                     .getDriver();
         } catch(DriverException ex) {
             plugin.getLogger().log(Level.SEVERE, ex.getMessage(), ex);
             return null;
         }
 
-        String jdbc = null;
-
-        try {
-            switch (plugin.getStorageType()) {
-                case FILE:
-                    jdbc = "jdbc:sqlite:" + new File(plugin.getDataFolder(), "database.db").getAbsolutePath();
-                    break;
-                case MYSQL:
-                    jdbc = plugin.getConfig().getString("mysql.jdbc");
-
-                    if (jdbc == null) {
-                        return DriverManager.getConnection("jdbc:mysql://" + plugin.getConfig().getString("mysql.ip") + ":" + plugin.getConfig().getInt("mysql.port") + "/" + plugin.getConfig().getString("mysql.database"), plugin.getConfig().getString("mysql.username"), plugin.getConfig().getString("mysql.password"));
-                    }
-                    break;
-            }
-        } catch (SQLException ex) {
-            ex.printStackTrace();
+        switch (plugin.getStorageType()) {
+            case FILE:
+                config.setPoolName("MultiLang SQLITE Connection Pool");
+                config.setJdbcUrl("jdbc:sqlite:" + new File(plugin.getDataFolder(), "database.db").getAbsolutePath());
+                break;
+            case MYSQL:
+                config.setPoolName("MultiLang MySQL Connection Pool");
+                config.setDataSourceClassName(driver.getName());
+                config.addDataSourceProperty("serverName", plugin.getConfig("mysql.ip"));
+                config.addDataSourceProperty("port", plugin.getConfig("mysql.port"));
+                config.addDataSourceProperty("databaseName", plugin.getConfig("mysql.database"));
+                config.addDataSourceProperty("user", plugin.getConfig("mysql.username"));
+                config.addDataSourceProperty("password", plugin.getConfig("mysql.password"));
+                config.addDataSourceProperty("useSSL", plugin.getConfig("mysql.ssl"));
+                break;
         }
 
-        Objects.requireNonNull(jdbc);
-
         try {
-            return DriverManager.getConnection(jdbc);
-        } catch (SQLException exception) {
-            exception.printStackTrace();
+            return new HikariDataSource(config);
+        } catch (Exception e) {
+            plugin.getLogger().log(Level.SEVERE, "Unable to connect to the database",e);
+            return null;
         }
-
-        return null;
     }
 
     public DatabaseManager(MultiLangPlugin plugin, List<Table> tables) {
         this(plugin,tables,createConnection(plugin));
     }
 
-    public DatabaseManager(MultiLangPlugin plugin, List<Table> tables, Connection connection) {
+    public DatabaseManager(MultiLangPlugin plugin, List<Table> tables, HikariDataSource connection) {
         this.plugin = plugin;
         this.tables = tables;
 
@@ -123,6 +127,7 @@ public final class DatabaseManager {
                 }
 
                 future.complete(null);
+                set.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -149,7 +154,13 @@ public final class DatabaseManager {
         }.runTaskAsynchronously(plugin);
     }
 
-    public Connection getConnection() {
+    @Nullable
+    public Connection getConnection() throws SQLException {
+        return connection.getConnection();
+    }
+
+    @Nullable
+    public HikariDataSource getHikari() {
         return connection;
     }
 

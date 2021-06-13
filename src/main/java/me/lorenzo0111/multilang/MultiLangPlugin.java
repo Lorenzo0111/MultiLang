@@ -24,6 +24,7 @@
 
 package me.lorenzo0111.multilang;
 
+import com.zaxxer.hikari.HikariDataSource;
 import me.lorenzo0111.multilang.api.objects.Cache;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.cache.PlayersCache;
@@ -35,6 +36,7 @@ import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
+import me.lorenzo0111.pluginslib.database.connection.HikariConnection;
 import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
 import me.lorenzo0111.pluginslib.dependency.beta.SlimJarDependencyManager;
@@ -47,7 +49,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.Collections;
@@ -64,7 +65,6 @@ public final class MultiLangPlugin extends JavaPlugin {
     private File cacheFolder;
     private StorageManager storage;
     private StorageType type;
-    public final static String MAVEN = "https://repo1.maven.org/maven2/";
     private UpdateChecker updater;
 
     @Override
@@ -101,7 +101,11 @@ public final class MultiLangPlugin extends JavaPlugin {
 
         this.updater = new UpdateChecker(this,93235,"https://www.spigotmc.org/resources/93235/",null);
 
-        this.resetConnection();
+        try {
+            this.resetConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         this.cacheFolder = new File(this.getDataFolder(), "cache");
 
@@ -116,12 +120,8 @@ public final class MultiLangPlugin extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
         this.getLogger().info("Closing database connection..");
 
-        try {
-            if (this.getDatabaseManager().getConnection() != null)
-                this.getDatabaseManager().getConnection().close();
-        } catch (SQLException e) {
-            this.getLogger().warning("An error has occurred while closing database connection: " + e.getMessage());
-        }
+        if (this.getDatabaseManager().getHikari() != null)
+            this.getDatabaseManager().getHikari().close();
 
         this.getLogger().info("Cleaning cache..");
 
@@ -180,16 +180,19 @@ public final class MultiLangPlugin extends JavaPlugin {
        return this.cacheFolder;
     }
 
-    public void resetConnection() throws ReloadException {
+    public void resetConnection() throws ReloadException, SQLException {
+        if (databaseManager != null && databaseManager.getHikari() != null && !databaseManager.getHikari().isClosed())
+            databaseManager.getHikari().close();
+
         this.type = StorageType.valueOf(this.getConfig("storage"));
         Objects.requireNonNull(this.type, "Invalid storage type");
 
-        final Connection connection = DatabaseManager.createConnection(this);
+        final HikariDataSource connection = DatabaseManager.createConnection(this);
         if (connection == null) throw new ReloadException("Connection cannot be null");
 
         Table playersTable = new Table
                 (this,
-                        connection,
+                        new HikariConnection(connection),
                         "players",
                         Arrays.asList(
                                 new Column("uuid", "STRING"),

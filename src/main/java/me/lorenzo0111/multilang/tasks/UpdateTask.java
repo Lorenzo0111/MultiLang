@@ -36,6 +36,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class UpdateTask implements Runnable {
@@ -51,7 +52,7 @@ public class UpdateTask implements Runnable {
             try {
                 final DatabaseManager database = plugin.getDatabaseManager();
 
-                final PreparedStatement statement = database.getConnection().prepareStatement("SELECT * FROM players;");
+                final PreparedStatement statement = Objects.requireNonNull(database.getConnection()).prepareStatement("SELECT * FROM players;");
                 final ResultSet set = statement.executeQuery();
 
                 Map<UUID, LocalizedPlayer> players = new HashMap<>();
@@ -66,7 +67,7 @@ public class UpdateTask implements Runnable {
 
                 plugin.getPlayerCache().reset();
                 players.forEach(plugin.getPlayerCache()::add);
-
+                statement.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
