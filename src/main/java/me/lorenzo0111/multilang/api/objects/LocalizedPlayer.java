@@ -63,7 +63,7 @@ public class LocalizedPlayer implements DatabaseSerializable {
 
     @Override
     public @NotNull String tableName() {
-        return "players";
+        return "multilang_players";
     }
 
     @Override

@@ -24,7 +24,6 @@
 
 package me.lorenzo0111.multilang;
 
-import com.zaxxer.hikari.HikariDataSource;
 import me.lorenzo0111.multilang.api.objects.Cache;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.cache.PlayersCache;
@@ -36,7 +35,7 @@ import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
-import me.lorenzo0111.pluginslib.database.connection.HikariConnection;
+import me.lorenzo0111.pluginslib.database.connection.IConnectionHandler;
 import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
 import me.lorenzo0111.pluginslib.dependency.beta.SlimJarDependencyManager;
@@ -120,8 +119,12 @@ public final class MultiLangPlugin extends JavaPlugin {
         Bukkit.getScheduler().cancelTasks(this);
         this.getLogger().info("Closing database connection..");
 
-        if (this.getDatabaseManager().getHikari() != null)
-            this.getDatabaseManager().getHikari().close();
+        try {
+            if (this.getDatabaseManager().getConnection() != null)
+                this.getDatabaseManager().getConnectionHandler().close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
 
         this.getLogger().info("Cleaning cache..");
 
@@ -181,19 +184,19 @@ public final class MultiLangPlugin extends JavaPlugin {
     }
 
     public void resetConnection() throws ReloadException, SQLException {
-        if (databaseManager != null && databaseManager.getHikari() != null && !databaseManager.getHikari().isClosed())
-            databaseManager.getHikari().close();
+        if (databaseManager != null && databaseManager.getConnection() != null)
+            databaseManager.getConnectionHandler().close();
 
         this.type = StorageType.valueOf(this.getConfig("storage"));
         Objects.requireNonNull(this.type, "Invalid storage type");
 
-        final HikariDataSource connection = DatabaseManager.createConnection(this);
+        final IConnectionHandler connection = DatabaseManager.createConnection(this);
         if (connection == null) throw new ReloadException("Connection cannot be null");
 
         Table playersTable = new Table
                 (this,
-                        new HikariConnection(connection),
-                        "players",
+                        connection,
+                        "multilang_players",
                         Arrays.asList(
                                 new Column("uuid", "STRING"),
                                 new Column("locale", "STRING")

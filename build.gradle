@@ -26,7 +26,7 @@ plugins {
     id 'java'
     id "com.github.johnrengelman.shadow" version "7.0.0"
     id 'maven-publish'
-    id 'io.github.slimjar' version '1.2.0'
+    id 'io.github.slimjar' version '1.2.1'
 }
 
 group = 'me.lorenzo0111'
@@ -56,18 +56,16 @@ repositories {
 }
 
 dependencies {
-    // TODO: Waiting for fix https://github.com/SlimJar/slimjar/issues/22
     compileOnly('com.github.MilkBowl:VaultAPI:1.7')
     compileOnly('me.Lorenzo0111:RocketPlaceholders:1.9.1')
-    implementation("dev.triumphteam:triumph-gui:3.0.0") // Slim
-    implementation('com.github.cryptomorin:XSeries:7.9.1.1') // Slim
-    // implementation('me.lorenzo0111:pluginslib:1.3')
-    implementation files('libs/pluginslib-1.3.jar')
-    implementation('net.kyori:adventure-api:4.8.1') // Slim
-    implementation('net.kyori:adventure-text-serializer-legacy:4.8.1') // Slim
-    implementation('mysql:mysql-connector-java:8.0.24') // Slim
-    implementation('org.xerial:sqlite-jdbc:3.34.0') // Slim
-    implementation('com.zaxxer:HikariCP:4.0.3') // Slim
+    slim("dev.triumphteam:triumph-gui:3.0.0")
+    slim('com.github.cryptomorin:XSeries:7.9.1.1')
+    implementation('me.lorenzo0111:pluginslib:1.3.1')
+    slim('net.kyori:adventure-api:4.8.1')
+    slim('net.kyori:adventure-text-serializer-legacy:4.8.1')
+    slim('mysql:mysql-connector-java:8.0.24')
+    slim('org.xerial:sqlite-jdbc:3.34.0')
+    slim('com.zaxxer:HikariCP:4.0.3')
 }
 
 shadowJar {
