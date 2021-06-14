@@ -38,7 +38,7 @@ ext {
 
 apply from: 'https://cdn.rocketplugins.space/spigot'
 
-group = 'me.Lorenzo0111'
+group = 'me.lorenzo0111'
 version = '1.1'
 
 java {
@@ -98,7 +98,7 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             groupId = group
-            artifactId = description
+            artifactId = project.name
             version = project.version
 
             from components.java
