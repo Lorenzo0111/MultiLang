@@ -26,11 +26,13 @@ package me.lorenzo0111.multilang.api.objects;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.pluginslib.database.DatabaseSerializable;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class LocalizedPlayer implements DatabaseSerializable {
     private final Player player;
@@ -59,6 +61,14 @@ public class LocalizedPlayer implements DatabaseSerializable {
         MultiLangPlugin.getInstance().getDatabaseManager().updateUser(this);
         MultiLangPlugin.getInstance().getPlayerCache().remove(this.getPlayer().getUniqueId());
         MultiLangPlugin.getInstance().getPlayerCache().add(this.getPlayer().getUniqueId(), this);
+    }
+
+    @Override
+    public DatabaseSerializable from(Map<String, Object> keys) {
+        Player player = Bukkit.getPlayer(UUID.fromString((String) keys.get("uuid")));
+        Locale locale = new Locale((String) keys.get("locale"));
+
+        return new LocalizedPlayer(player,locale);
     }
 
     @Override

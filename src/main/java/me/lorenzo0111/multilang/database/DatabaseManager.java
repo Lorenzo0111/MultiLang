@@ -38,6 +38,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.Nullable;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.Collection;
@@ -53,7 +54,7 @@ public final class DatabaseManager {
     private final IConnectionHandler connectionHandler;
 
     @Nullable
-    public static IConnectionHandler createConnection(MultiLangPlugin plugin) throws SQLException {
+    public static IConnectionHandler createConnection(MultiLangPlugin plugin) throws SQLException, IOException {
         HikariConfig config = new HikariConfig();
 
         config.setMaximumPoolSize(10);
@@ -94,7 +95,7 @@ public final class DatabaseManager {
         }
     }
 
-    public DatabaseManager(MultiLangPlugin plugin, List<Table> tables) throws SQLException {
+    public DatabaseManager(MultiLangPlugin plugin, List<Table> tables) throws SQLException, IOException {
         this(plugin,tables,createConnection(plugin));
     }
 

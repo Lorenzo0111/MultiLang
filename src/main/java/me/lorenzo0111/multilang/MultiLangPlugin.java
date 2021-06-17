@@ -38,9 +38,9 @@ import me.lorenzo0111.multilang.utils.PluginLoader;
 import me.lorenzo0111.pluginslib.database.connection.IConnectionHandler;
 import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
-import me.lorenzo0111.pluginslib.dependency.beta.SlimJarDependencyManager;
+import me.lorenzo0111.pluginslib.dependency.slimjar.SlimJarDependencyManager;
 import me.lorenzo0111.pluginslib.updater.UpdateChecker;
-import me.lorenzo0111.rocketplaceholders.api.RocketPlaceholdersAPI;
+import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -55,7 +55,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class MultiLangPlugin extends JavaPlugin {
-    private RocketPlaceholdersAPI rocketPlaceholdersAPI;
+    private IRocketPlaceholdersAPI rocketPlaceholdersAPI;
     private ConfigManager configManager;
     private PluginLoader loader;
     private static MultiLangPlugin instance;
@@ -102,7 +102,7 @@ public final class MultiLangPlugin extends JavaPlugin {
 
         try {
             this.resetConnection();
-        } catch (SQLException e) {
+        } catch (SQLException | IOException e) {
             e.printStackTrace();
         }
 
@@ -120,7 +120,7 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.getLogger().info("Closing database connection..");
 
         try {
-            if (this.getDatabaseManager().getConnection() != null)
+            if (this.getDatabaseManager().getConnectionHandler() != null)
                 this.getDatabaseManager().getConnectionHandler().close();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -143,11 +143,11 @@ public final class MultiLangPlugin extends JavaPlugin {
         }
     }
 
-    public RocketPlaceholdersAPI getRocketPlaceholdersAPI() {
+    public IRocketPlaceholdersAPI getRocketPlaceholdersAPI() {
         return rocketPlaceholdersAPI;
     }
 
-    public void setRocketPlaceholdersAPI(RocketPlaceholdersAPI rocketPlaceholdersAPI) {
+    public void setRocketPlaceholdersAPI(IRocketPlaceholdersAPI rocketPlaceholdersAPI) {
         this.rocketPlaceholdersAPI = rocketPlaceholdersAPI;
     }
 
@@ -183,8 +183,8 @@ public final class MultiLangPlugin extends JavaPlugin {
        return this.cacheFolder;
     }
 
-    public void resetConnection() throws ReloadException, SQLException {
-        if (databaseManager != null && databaseManager.getConnection() != null)
+    public void resetConnection() throws ReloadException, SQLException, IOException {
+        if (databaseManager != null && databaseManager.getConnectionHandler() != null)
             databaseManager.getConnectionHandler().close();
 
         this.type = StorageType.valueOf(this.getConfig("storage"));

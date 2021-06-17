@@ -27,16 +27,12 @@ package me.lorenzo0111.multilang.tasks;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
-import me.lorenzo0111.multilang.database.DatabaseManager;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
 
 public class UpdateTask implements Runnable {
@@ -48,29 +44,27 @@ public class UpdateTask implements Runnable {
 
     @Override
     public void run() {
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-            try {
-                final DatabaseManager database = plugin.getDatabaseManager();
+        plugin.getDatabaseManager()
+                .getUsersTable()
+                .all()
+                .thenAccept((set) -> {
+                    try {
+                        Map<UUID, LocalizedPlayer> players = new HashMap<>();
 
-                final PreparedStatement statement = Objects.requireNonNull(database.getConnection()).prepareStatement("SELECT * FROM players;");
-                final ResultSet set = statement.executeQuery();
+                        while (set.next()) {
+                            Player player = Bukkit.getPlayer(UUID.fromString(set.getString("uuid")));
 
-                Map<UUID, LocalizedPlayer> players = new HashMap<>();
+                            if (player != null) {
+                                players.put(player.getUniqueId(), new LocalizedPlayer(player, new Locale(set.getString("locale"))));
+                            }
+                        }
 
-                while (set.next()) {
-                    Player player = Bukkit.getPlayer(UUID.fromString(set.getString("uuid")));
-
-                    if (player != null) {
-                        players.put(player.getUniqueId(), new LocalizedPlayer(player,new Locale(set.getString("locale"))));
+                        plugin.getPlayerCache().reset();
+                        players.forEach(plugin.getPlayerCache()::add);
+                        set.close();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
                     }
-                }
-
-                plugin.getPlayerCache().reset();
-                players.forEach(plugin.getPlayerCache()::add);
-                statement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        });
+                });
     }
 }

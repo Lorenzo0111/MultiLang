@@ -33,7 +33,7 @@ import me.lorenzo0111.multilang.handlers.ConfigManager;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.pluginslib.command.Customization;
 import me.lorenzo0111.pluginslib.config.ConfigExtractor;
-import me.lorenzo0111.rocketplaceholders.api.RocketPlaceholdersAPI;
+import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
@@ -59,7 +59,7 @@ public final class PluginLoader {
     public boolean init() {
         plugin.getLogger().info("Hooking with RocketPlaceholders..");
 
-        RocketPlaceholdersAPI api = Bukkit.getServicesManager().load(RocketPlaceholdersAPI.class);
+        IRocketPlaceholdersAPI api = Bukkit.getServicesManager().load(IRocketPlaceholdersAPI.class);
 
         if (api != null) {
             plugin.getLogger().info("RocketPlaceholders hooked!");
@@ -100,8 +100,9 @@ public final class PluginLoader {
         plugin.getLogger().info("Loading gui.yml..");
         guiFile = new File(plugin.getDataFolder(),"gui.yml");
         if (!guiFile.exists()) {
-            guiFile = new ConfigExtractor(MultiLangPlugin.class,plugin.getDataFolder(),"gui.yml")
-                    .extract();
+            guiFile = Objects.requireNonNull(new ConfigExtractor(MultiLangPlugin.class, plugin.getDataFolder(), "gui.yml")
+                    .extract())
+                    .getFile();
         }
 
         this.reloadGui();
@@ -111,8 +112,9 @@ public final class PluginLoader {
         plugin.getLogger().info("Loading messages.yml..");
         messagesFile = new File(plugin.getDataFolder(),"messages.yml");
         if (!messagesFile.exists()) {
-            guiFile = new ConfigExtractor(MultiLangPlugin.class,plugin.getDataFolder(),"messages.yml")
-                    .extract();
+            guiFile = Objects.requireNonNull(new ConfigExtractor(MultiLangPlugin.class, plugin.getDataFolder(), "messages.yml")
+                    .extract())
+                    .getFile();
         }
 
         this.reloadMessages();
