@@ -60,7 +60,7 @@ dependencies {
     compileOnly('com.github.MilkBowl:VaultAPI:1.7')
     compileOnly('me.lorenzo0111:RocketPlaceholders:1.9.2')
     slim("dev.triumphteam:triumph-gui:3.0.2")
-    slim('com.github.cryptomorin:XSeries:8.0.0')
+    slim('com.github.cryptomorin:XSeries:8.1.0')
     slim('net.kyori:adventure-api:4.8.1')
     slim('net.kyori:adventure-text-serializer-legacy:4.8.1')
     slim('mysql:mysql-connector-java:8.0.25')
