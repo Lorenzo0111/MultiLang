@@ -64,7 +64,7 @@ dependencies {
     slim('net.kyori:adventure-api:4.8.1')
     slim('net.kyori:adventure-text-serializer-legacy:4.8.1')
     slim('mysql:mysql-connector-java:8.0.25')
-    slim('org.xerial:sqlite-jdbc:3.34.0')
+    slim('org.xerial:sqlite-jdbc:3.36.0')
     slim('com.zaxxer:HikariCP:4.0.3')
 }
 
