@@ -3,5 +3,14 @@ jdk: [ openjdk8 ]
 dist: xenial
 os: linux
 install: skip
+addons:
+  sonarcloud:
+    organization: "lorenzo0111"
+    token:
+      secure: "mWjvSefyRuFeNbL10DaMdu23/RAxp6UF6F96p7A6b2xIg1kDb+gviPX7TEBzUxewkzSOgr7G9JENJj5VGAxO44wGvg85VBp2hvXTVA12Zsgbb9goaEs6C8PwX0QURmwM6s2n82W37yBt+
+      O0ZJVWWKrnNMW/dW5V6hQlKBY67ZoR5Y0LlmIiRAetwG9YY9N9YyZ/zvexuDGMR6gqVX+nM9Dp3kvT8cLiLL+VxFYtgyx73pvETUnmjckVfSG8iwfowrxw7Xhzp2UkcoI1AQHUPCbSY4bJdx37GMSWP8
+      nVKpzk9CkfW8ML6IcfmqJ9BlAuXoCgiLqi/9v6cCPfg6tiLw4B7eBOhY3BlzGscxRfNurP9csA8xK6EIn4plm6mLZXSgYBP+ec32nEI4lszQMQceZMMbKjdOzEOMYx6yr48wwDuGjMCZ+OG36H0P8IG/
+      uP02VrLO+VsMTRALf2BQlFx4Beh/jyVO//dKeHbC2zyABvTzq8re9Wpd/Hep3/LmYQBHzhifKKpmcCP4U+7ezUXU01tO3WWMm0368dRbPT3BJbSdf0UyKvTgXzw+HufohPEu+xyKNLLI/SPSR+i+M5vi
+      zWOJYLWyNg3fzdBqH4mwrQv/lC+UwFvYrseO51oBhUWuTX0BQgBbpsVLw1NxXjDhPjSicsjMJuXOOKJu0bvGnA="
 script:
-  - ./gradlew shadowJar
+  - ./gradlew sonarqube shadowJar
