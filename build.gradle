@@ -21,6 +21,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'java'
@@ -30,9 +31,6 @@ plugins {
     id "org.sonarqube" version "3.3"
 }
 
-group = 'me.lorenzo0111'
-version = '1.0'
-
 ext {
     libsBase = 'me.lorenzo0111.multilang.libs'
 }
@@ -40,7 +38,7 @@ ext {
 apply from: 'https://cdn.rocketplugins.space/spigot'
 
 group = 'me.lorenzo0111'
-version = '1.1'
+version = '1.2'
 
 java {
     withJavadocJar()
@@ -161,6 +159,13 @@ publishing {
                 }
             }
         }
+    }
+}
+
+processResources {
+    from(sourceSets.main.resources.srcDirs) {
+        duplicatesStrategy DuplicatesStrategy.INCLUDE
+        filter ReplaceTokens, tokens: [version: version]
     }
 }
 
