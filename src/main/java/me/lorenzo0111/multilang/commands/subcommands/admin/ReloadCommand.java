@@ -28,6 +28,7 @@ import com.cryptomorin.xseries.XSound;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
+import me.lorenzo0111.multilang.protocol.adapter.EntityAdapter;
 import me.lorenzo0111.pluginslib.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -62,6 +63,7 @@ public class ReloadCommand extends SubCommand {
             plugin.getConfigManager().register();
             plugin.getLoader().reloadGui();
             plugin.getLoader().reloadMessages();
+            plugin.getServer().getScheduler().runTask(plugin, EntityAdapter.getInstance());
 
             if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;

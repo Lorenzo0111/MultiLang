@@ -24,6 +24,8 @@
 
 package me.lorenzo0111.multilang;
 
+import com.comphenix.protocol.ProtocolLibrary;
+import me.lorenzo0111.multilang.api.IMultiLangAPI;
 import me.lorenzo0111.multilang.api.objects.Cache;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.cache.PlayersCache;
@@ -32,6 +34,7 @@ import me.lorenzo0111.multilang.database.DatabaseManager;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
 import me.lorenzo0111.multilang.listeners.JoinListener;
+import me.lorenzo0111.multilang.protocol.PacketHandler;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
@@ -43,6 +46,8 @@ import me.lorenzo0111.pluginslib.updater.UpdateChecker;
 import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,6 +60,7 @@ import java.util.Objects;
 import java.util.UUID;
 
 public final class MultiLangPlugin extends JavaPlugin {
+    private IMultiLangAPI api;
     private IRocketPlaceholdersAPI rocketPlaceholdersAPI;
     private ConfigManager configManager;
     private PluginLoader loader;
@@ -65,6 +71,7 @@ public final class MultiLangPlugin extends JavaPlugin {
     private StorageManager storage;
     private StorageType type;
     private UpdateChecker updater;
+    private PacketHandler protocol;
 
     @Override
     public void onLoad() {
@@ -92,6 +99,12 @@ public final class MultiLangPlugin extends JavaPlugin {
                 new UpdateTask(this),
                 60 * 20L,120 * 20L);
 
+        if (Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
+            this.getLogger().info("Hooked with ProtocolLib. Now updating inventories.");
+            protocol = new PacketHandler(ProtocolLibrary.getProtocolManager(),this);
+            protocol.init();
+        }
+
         loader.commands();
         loader.api();
         loader.gui();
@@ -117,6 +130,7 @@ public final class MultiLangPlugin extends JavaPlugin {
     public void onDisable() {
         this.configManager.unregisterAll();
         Bukkit.getScheduler().cancelTasks(this);
+        protocol.unload();
         this.getLogger().info("Closing database connection..");
 
         try {
@@ -226,8 +240,36 @@ public final class MultiLangPlugin extends JavaPlugin {
             e.printStackTrace();
         }
     }
+    
+    public void customDebug(@NotNull String key, @Nullable String prefix, Object message) {
+        if (this.getConfig().getBoolean("debug." + key)) {
+            this.getLogger().info("[Debug] [" + prefix + "] " + message);
+        }
+    }
+
+    public void debug(Object message) {
+        if (this.getConfig().getBoolean("debug.default")) {
+            this.getLogger().info("[Debug] " + message);
+        }
+    }
 
     public UpdateChecker getUpdater() {
         return updater;
+    }
+
+    public PacketHandler getProtocol() {
+        return protocol;
+    }
+
+    public IMultiLangAPI getApi() {
+        return api;
+    }
+
+    public void setApi(@NotNull IMultiLangAPI api) {
+        if (this.api != null) {
+            throw new IllegalStateException("API has been already initialized");
+        }
+
+        this.api = api;
     }
 }

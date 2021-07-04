@@ -35,6 +35,7 @@ import me.lorenzo0111.pluginslib.command.Customization;
 import me.lorenzo0111.pluginslib.config.ConfigExtractor;
 import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -77,13 +78,15 @@ public final class PluginLoader {
     }
 
     public void metrics() {
-        new Metrics(plugin,11666);
+        new Metrics(plugin,11666)
+        .addCustomChart(new SimplePie("localesCount", () -> String.valueOf(plugin.getConfigManager().getLocales().size())));
     }
 
     public void api() {
         plugin.getLogger().info("Initializing api..");
         final MultiLangAPI api = new MultiLangAPI(plugin);
         Bukkit.getServicesManager().register(IMultiLangAPI.class,api,plugin, ServicePriority.Normal);
+        plugin.setApi(api);
     }
 
     public void commands() {

@@ -81,6 +81,9 @@ public class ConfigManager {
         plugin.getLogger().info("Loaded all placeholders in " + time + "ms");
     }
 
+    public List<String> getLocales() {
+        return plugin.getConfig().getStringList("languages");
+    }
 
     public void save(String identifier,String defaultText,Map<Locale,String> localesMap) {
         List<ConditionNode> conditions = new ArrayList<>();

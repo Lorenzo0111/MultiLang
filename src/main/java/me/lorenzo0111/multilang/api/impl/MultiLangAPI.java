@@ -80,7 +80,7 @@ public class MultiLangAPI implements IMultiLangAPI {
                 .findFirst();
 
         return string.
-                map(localizedString -> localizedString.getLocales().get(locale))
+                map(str -> str.getLocales().getOrDefault(locale,str.getDefaultString()))
                 .orElse(null);
     }
 
