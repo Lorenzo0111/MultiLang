@@ -22,51 +22,53 @@
  * SOFTWARE.
  */
 
-package me.lorenzo0111.multilang.api;
+package me.lorenzo0111.multilang.api.events;
 
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
-import me.lorenzo0111.multilang.api.objects.LocalizedString;
-import me.lorenzo0111.multilang.exceptions.ApiException;
-import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.player.PlayerEvent;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
-/**
- * MultiLang API Interface
- */
-public interface IMultiLangAPI {
+public class ChangeLocaleEvent extends PlayerEvent implements Cancellable {
+    private boolean cancelled = false;
+    private static final HandlerList HANDLERS = new HandlerList();
+    private Locale locale;
+    private final LocalizedPlayer player;
 
-    /**
-     * @param string String to add
-     * @throws ApiException caused when something went wrong
-     */
-    void addString(LocalizedString string) throws ApiException;
+    public ChangeLocaleEvent(@NotNull LocalizedPlayer player,@NotNull Locale locale) {
+        super(player.getPlayer());
+        this.player = player;
+        this.locale = locale;
+    }
 
-    /**
-     * @param player Player
-     * @param locale Locale to set
-     * @return The localized player instance
-     */
-    LocalizedPlayer setLang(Player player, Locale locale);
+    public Locale getLocale() {
+        return locale;
+    }
 
-    /**
-     * @param player Player to convert
-     * @return An instance of a localized player of that player
-     */
-    @NotNull LocalizedPlayer getPlayer(Player player);
+    @NotNull
+    public LocalizedPlayer getLocalizedPlayer() {
+        return player;
+    }
 
-    /**
-     * @param player Player to localize
-     * @param key Key of the string
-     * @return A localized string
-     */
-    @Nullable String localize(Player player, String key);
+    public void setLocale(@NotNull Locale locale) {
+        this.locale = locale;
+    }
 
-    /**
-     * @param locale Locale of the string
-     * @param key Key of the string
-     * @return A localized string
-     */
-    @Nullable String localize(Locale locale, String key);
+    @Override
+    public boolean isCancelled() {
+        return cancelled;
+    }
+
+    @Override
+    public void setCancelled(boolean cancel) {
+        this.cancelled = cancel;
+    }
+
+    @NotNull
+    @Override
+    public HandlerList getHandlers() {
+        return HANDLERS;
+    }
 }

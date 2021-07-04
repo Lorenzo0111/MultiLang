@@ -24,13 +24,16 @@
 
 package me.lorenzo0111.multilang.commands.subcommands;
 
+import me.lorenzo0111.multilang.api.events.ChangeLocaleEvent;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
+import me.lorenzo0111.multilang.utils.Conditions;
 import me.lorenzo0111.pluginslib.command.Command;
 import me.lorenzo0111.pluginslib.command.annotations.AnyArgument;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
+import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -89,7 +92,14 @@ public class EditCommand extends SubCommand {
             return;
         }
 
-        player.setLocale(new Locale(localeName));
+        Locale locale = new Locale(localeName);
+        ChangeLocaleEvent event = new ChangeLocaleEvent(player,locale);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
+        Conditions.localeValid(event.getLocale());
+
+        player.setLocale(event.getLocale());
         player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("changed"),localeName));
     }
 

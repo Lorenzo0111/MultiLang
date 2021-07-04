@@ -31,6 +31,7 @@ import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.api.objects.LocalizedString;
 import me.lorenzo0111.multilang.exceptions.ApiException;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -63,6 +64,11 @@ public class MultiLangAPI implements IMultiLangAPI {
         LocalizedPlayer localizedPlayer = LocalizedPlayer.from(player);
         localizedPlayer.setLocale(locale);
         return localizedPlayer;
+    }
+
+    @Override
+    public @NotNull LocalizedPlayer getPlayer(Player player) {
+        return LocalizedPlayer.from(player);
     }
 
     @Override
