@@ -26,12 +26,14 @@ package me.lorenzo0111.multilang.utils;
 
 import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
+import dev.triumphteam.gui.components.InteractionModifier;
 import dev.triumphteam.gui.guis.GuiItem;
 import dev.triumphteam.gui.guis.PaginatedGui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.ChatColor;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.EnumSet;
 import java.util.Objects;
 
 public class GuiUtils {
@@ -42,7 +44,7 @@ public class GuiUtils {
     }
 
     public static PaginatedGui createGui(String prefix, String title) {
-        final PaginatedGui gui = new PaginatedGui(3, Component.text(ChatColor.translateAlternateColorCodes('&',prefix + title)));
+        final PaginatedGui gui = new PaginatedGui(3, 17, ChatColor.translateAlternateColorCodes('&',prefix + title), EnumSet.noneOf(InteractionModifier.class));
         gui.setDefaultClickAction(a -> a.setCancelled(true));
         return gui;
     }
