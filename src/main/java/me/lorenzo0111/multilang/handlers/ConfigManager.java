@@ -33,10 +33,13 @@ import me.lorenzo0111.multilang.requirements.LangRequirement;
 import me.lorenzo0111.rocketplaceholders.creator.Placeholder;
 import me.lorenzo0111.rocketplaceholders.creator.conditions.ConditionNode;
 import org.bukkit.configuration.ConfigurationSection;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
 public class ConfigManager {
+    private Locale defaultLocale;
+    private final Map<String,String> keysMap = new HashMap<>();
     private final MultiLangPlugin plugin;
     private final List<Placeholder> addedPlaceholders = new ArrayList<>();
     public ConfigManager(MultiLangPlugin plugin) {
@@ -47,15 +50,24 @@ public class ConfigManager {
 
         String defaultString = plugin.getConfig("default");
 
-        if (defaultString == null || !plugin.getConfig().getStringList("languages").contains(defaultString)) {
+        if (defaultString == null || !keysMap.containsKey(defaultString)) {
             throw new ConfigException("Default language does not exists.");
         }
+
+        this.defaultLocale = new Locale(defaultString, keysMap.get(defaultString));
 
     }
 
     public void register() {
         final long before = System.currentTimeMillis();
         final ConfigurationSection langSection = Objects.requireNonNull(plugin.getConfig().getConfigurationSection("strings"));
+        final ConfigurationSection localesSection = plugin.getConfig().getConfigurationSection("languages");
+
+        Objects.requireNonNull(localesSection, "Locales section cannot be null.");
+
+        for (String key : localesSection.getKeys(false)) {
+            this.keysMap.put(key.toLowerCase(), localesSection.getString(key));
+        }
 
         for (String key : langSection.getKeys(false)) {
             final ConfigurationSection section = Objects.requireNonNull(langSection.getConfigurationSection(key));
@@ -64,8 +76,8 @@ public class ConfigManager {
             final Map<Locale,String> localesMap = new HashMap<>();
 
             for (String localeKey : Objects.requireNonNull(section.getConfigurationSection("locales")).getKeys(false)) {
-                if (plugin.getConfig().getStringList("languages").contains(localeKey.toLowerCase())) {
-                    localesMap.put(new Locale(localeKey),section.getString("locales." + localeKey));
+                if (keysMap.containsKey(localeKey.toLowerCase())) {
+                    localesMap.put(new Locale(localeKey,keysMap.get(localeKey.toLowerCase())),section.getString("locales." + localeKey));
                 } else {
                     throw new ReloadException("Locale " + localeKey + " does not exists. Please add it in languages section");
                 }
@@ -81,8 +93,19 @@ public class ConfigManager {
         plugin.getLogger().info("Loaded all placeholders in " + time + "ms");
     }
 
-    public List<String> getLocales() {
-        return plugin.getConfig().getStringList("languages");
+    public Map<String,String> getLocales() {
+        return keysMap;
+    }
+
+    public Locale byKey(@Nullable String value) {
+        if (value == null || !keysMap.containsValue(value)) return getDefault();
+
+        return keysMap.entrySet()
+                .stream()
+                .filter((entry) -> entry.getValue().equals(value))
+                .findFirst()
+                .map((entry) -> new Locale(entry.getKey(),entry.getValue()))
+                .orElse(getDefault());
     }
 
     public void save(String identifier,String defaultText,Map<Locale,String> localesMap) {
@@ -100,5 +123,9 @@ public class ConfigManager {
     public void unregisterAll() {
         addedPlaceholders.forEach(item -> plugin.getRocketPlaceholdersAPI().removePlaceholder(item.getIdentifier()));
         this.plugin.getStorage().getInternal().clear();
+    }
+
+    public Locale getDefault() {
+        return defaultLocale;
     }
 }

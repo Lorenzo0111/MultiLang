@@ -92,7 +92,7 @@ public class EditCommand extends SubCommand {
             return;
         }
 
-        Locale locale = new Locale(localeName);
+        Locale locale = new Locale(localeName,subcommand.getPlugin().getConfigManager().getLocales().get(localeName));
         ChangeLocaleEvent event = new ChangeLocaleEvent(player,locale);
         Bukkit.getPluginManager().callEvent(event);
         if (event.isCancelled()) return;

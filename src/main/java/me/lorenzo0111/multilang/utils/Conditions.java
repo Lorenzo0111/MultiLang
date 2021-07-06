@@ -27,17 +27,17 @@ package me.lorenzo0111.multilang.utils;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.Locale;
 
-import java.util.List;
+import java.util.Map;
 
 public final class Conditions {
 
     public static void localeValid(Locale locale) {
         if (!locale.getName().toLowerCase().equals(locale.getName())) throw new IllegalStateException("Locale name must be lowercase");
 
-        List<String> locales = MultiLangPlugin.getInstance()
+        Map<String,String> locales = MultiLangPlugin.getInstance()
                 .getConfigManager()
                 .getLocales();
 
-        if (!locales.contains(locale.getName())) throw new IllegalStateException("Provided locale does not exist.");
+        if (!locales.containsKey(locale.getName())) throw new IllegalStateException("Provided locale does not exist.");
     }
 }

@@ -28,13 +28,24 @@ import java.util.Objects;
 
 public class Locale {
     private final String name;
+    private final String locale;
 
+    @Deprecated
     public Locale(String name) {
+        this(name,"en_US");
+    }
+
+    public Locale(String name, String locale) {
         this.name = name;
+        this.locale = locale.equals("Please set this to a valid key. Read the documentation for more information.") ? "en_US" : locale;
     }
 
     public String getName() {
         return name;
+    }
+
+    public String getLocale() {
+        return locale;
     }
 
     @Override
@@ -46,12 +57,12 @@ public class Locale {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Locale locale = (Locale) o;
-        return name.equals(locale.getName());
+        Locale locale1 = (Locale) o;
+        return Objects.equals(name, locale1.name) && Objects.equals(locale, locale1.locale);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(name, locale);
     }
 }

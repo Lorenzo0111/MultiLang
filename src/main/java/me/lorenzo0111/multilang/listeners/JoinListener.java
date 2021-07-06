@@ -26,6 +26,7 @@ package me.lorenzo0111.multilang.listeners;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.cache.PlayersCache;
+import me.lorenzo0111.multilang.utils.Reflection;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -40,9 +41,18 @@ public class JoinListener implements Listener {
 
     @EventHandler(priority = EventPriority.MONITOR)
     public void onJoin(PlayerJoinEvent event) {
-        PlayersCache.addCachedPlayer(plugin.getPlayerCache(), event.getPlayer(), plugin.getDatabaseManager().getUsersTable());
+        PlayersCache.addCachedPlayer(plugin.getPlayerCache(), event.getPlayer(), plugin.getDatabaseManager().getUsersTable())
+        .thenAccept((player) -> {
+            plugin.debug(String.format("Trying to autodetect %s(%s) language..",event.getPlayer().getName(),event.getPlayer().getUniqueId()));
+            String locale = Reflection.getLocale(event.getPlayer());
+
+            if (player != null &&
+                    !player.getLocale().getLocale().equals(locale))
+                player.setLocale(plugin.getConfigManager().byKey(locale));
+        });
 
         if (event.getPlayer().hasPermission("multilang.admin"))
             plugin.getUpdater().sendUpdateCheck(event.getPlayer());
+
     }
 }

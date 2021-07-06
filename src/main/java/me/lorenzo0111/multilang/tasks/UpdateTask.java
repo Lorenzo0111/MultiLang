@@ -55,7 +55,7 @@ public class UpdateTask implements Runnable {
                             Player player = Bukkit.getPlayer(UUID.fromString(set.getString("uuid")));
 
                             if (player != null) {
-                                players.put(player.getUniqueId(), new LocalizedPlayer(player, new Locale(set.getString("locale"))));
+                                players.put(player.getUniqueId(), new LocalizedPlayer(player, new Locale(set.getString("locale"),plugin.getConfigManager().getLocales().get(set.getString("locale")))));
                             }
                         }
 

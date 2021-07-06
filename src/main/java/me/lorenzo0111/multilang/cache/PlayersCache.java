@@ -25,6 +25,7 @@
 package me.lorenzo0111.multilang.cache;
 
 import com.google.gson.Gson;
+import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.Cache;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
@@ -38,6 +39,7 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
 public class PlayersCache implements Cache<UUID, LocalizedPlayer> {
     private final Map<UUID,LocalizedPlayer> cache = new HashMap<>();
@@ -87,22 +89,30 @@ public class PlayersCache implements Cache<UUID, LocalizedPlayer> {
                 '}';
     }
 
-    public static void addCachedPlayer(Cache<UUID,LocalizedPlayer> cache, Player player, Table table) {
+    public static CompletableFuture<LocalizedPlayer> addCachedPlayer(Cache<UUID,LocalizedPlayer> cache, Player player, Table table) {
+        CompletableFuture<LocalizedPlayer> future = new CompletableFuture<>();
+
         table.find("uuid", player.getUniqueId()).thenAccept((set) -> {
             try {
                 if (set.next()) {
                     if (cache.get(player.getUniqueId()) != null) {
                         cache.remove(player.getUniqueId());
                     }
-                    cache.add(player.getUniqueId(), new LocalizedPlayer(player,new Locale(set.getString("locale"))));
+
+                    LocalizedPlayer localized = new LocalizedPlayer(player,new Locale(set.getString("locale"), MultiLangPlugin.getInstance().getConfigManager().getLocales().getOrDefault(set.getString("locale"),"en_US")));
+                    cache.add(player.getUniqueId(), localized);
+                    future.complete(localized);
                     return;
                 }
 
                 cache.add(player.getUniqueId(), LocalizedPlayer.from(player));
+                future.complete(null);
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         });
+
+        return future;
     }
 
 }

@@ -54,10 +54,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
+import java.util.logging.Level;
 
 public final class MultiLangPlugin extends JavaPlugin {
     private IMultiLangAPI api;
@@ -86,6 +84,12 @@ public final class MultiLangPlugin extends JavaPlugin {
     }
 
     private void loadPlugin() {
+        try {
+            this.updateConfig();
+        } catch (IOException e) {
+            this.getLogger().log(Level.WARNING, "An error has occurred while trying to auto-update the configuration.",e);
+        }
+
         this.loader = new PluginLoader(this);
         this.storage = new StorageManager(this);
 
@@ -212,8 +216,8 @@ public final class MultiLangPlugin extends JavaPlugin {
                         connection,
                         "multilang_players",
                         Arrays.asList(
-                                new Column("uuid", "STRING"),
-                                new Column("locale", "STRING")
+                                new Column("uuid", "TEXT"),
+                                new Column("locale", "TEXT")
                         ));
 
         this.databaseManager = new DatabaseManager(this, Collections.singletonList(playersTable), connection);
@@ -239,6 +243,28 @@ public final class MultiLangPlugin extends JavaPlugin {
             this.getLogger().severe("Unable to load dependencies...");
             e.printStackTrace();
         }
+    }
+
+    @SuppressWarnings("rawtypes")
+    public void updateConfig() throws IOException {
+        Object languages = this.getConfig().get("languages");
+
+        if (languages instanceof List) {
+            this.getLogger().info("Trying to auto aupdate the configuration..");
+
+            this.getConfig().set("languages",null);
+
+            for (Object key : (List) languages) {
+                this.getConfig().set("languages."+key,"Please set this to a valid key. Read the documentation for more information.");
+            }
+
+            this.getConfig().set("old.languages",languages);
+
+            this.getConfig().save(new File(getDataFolder(),"config.yml"));
+
+            this.getLogger().info("Configuration updated! I've left something incomplete, please read the configuration.");
+        }
+
     }
     
     public void customDebug(@NotNull String key, @Nullable String prefix, Object message) {

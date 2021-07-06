@@ -124,7 +124,7 @@ public final class DatabaseManager {
         this.usersTable.find("uuid", player.getUniqueId().toString()).thenAccept((set) -> {
             try {
                 if (set.next()) {
-                    future.complete(new LocalizedPlayer(player,new Locale(set.getString("locale"))));
+                    future.complete(new LocalizedPlayer(player,new Locale(set.getString("locale"), plugin.getConfigManager().getLocales().get(set.getString("locale")))));
                 }
 
                 future.complete(null);
