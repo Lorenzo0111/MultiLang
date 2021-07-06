@@ -3,6 +3,16 @@ jdk: [ openjdk11 ]
 dist: xenial
 os: linux
 install: skip
+
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+
 addons:
   sonarcloud:
     organization: "lorenzo0111"
@@ -12,5 +22,9 @@ addons:
       l9Ez/G0KmQRnrMwgmhkCBorNd8rYZGTWOfQphtiIe5HPp4K6bjDXEF5KNaVl0W72K+CQ2VRnR/I+jpa9632AfhNRiTHnria0wOtCW9RSLDKIs06GWVIaK8CX38FRkv6tPLAw/pa7AJL9rH3saupKvIB5
       s7ABwuA6ZXJ++y8WeVHvVQOck5RGCjxyV+Iqa6sPV6pU8ictE3fRcCT8JSaqJu6wTsTF3m6Mu3Xg/dpddfRD4MRsWd1e2/wBCozNB/+hBqIkut+dG8txYYCfZSELDs6VmSCPRK9cgrW8oWmL1q5AbSK5
       xzpAGWGZIL034U5flxqocYTEzAG16gGbBoB4YEJcLwcAUtk23/ubOe6JVZuUElckoeyeEZT+C+wtF0YAIH9pFw="
-script:
-  - ./gradlew sonarqube shadowJar
+jobs:
+  include:
+    - stage: build
+      script: ./gradlew shadowJar --no-daemon
+    - stage: scan
+      script: ./gradlew sonarqube --no-daemon
