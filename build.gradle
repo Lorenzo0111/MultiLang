@@ -60,7 +60,7 @@ dependencies {
     compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.6.0"
     compileOnly('com.github.MilkBowl:VaultAPI:1.7')
     compileOnly('me.lorenzo0111:RocketPlaceholders:1.9.2')
-    implementation("dev.triumphteam:triumph-gui:3.0.2")
+    implementation("dev.triumphteam:triumph-gui:3.0.3")
     slim('com.github.cryptomorin:XSeries:8.2.0')
     slim('net.kyori:adventure-api:4.8.1')
     slim('net.kyori:adventure-text-serializer-legacy:4.8.1')
