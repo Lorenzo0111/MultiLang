@@ -14,3 +14,4 @@ changed: "&7Language changed to &9%s&7."
 gui:
   title: "&7Languages"
   current: "&7Current language: &9"
+  current-lore: "&7Click here to autodetect."

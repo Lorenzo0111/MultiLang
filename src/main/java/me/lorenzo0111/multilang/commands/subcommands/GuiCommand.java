@@ -31,6 +31,7 @@ import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.multilang.utils.GuiUtils;
+import me.lorenzo0111.multilang.utils.Reflection;
 import me.lorenzo0111.pluginslib.command.Command;
 import me.lorenzo0111.pluginslib.command.annotations.NoArguments;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
@@ -75,10 +76,17 @@ public class GuiCommand extends SubCommand {
         gui.setItem(22,
                 ItemBuilder.from(Objects.requireNonNull(XMaterial.TORCH.parseItem()))
                         .name(Component.text(MessagesManager.get("gui.current") + player.getLocale().toString()))
-                        .asGuiItem()
+                        .lore(Component.text(MessagesManager.get("gui.current-lore")))
+                        .asGuiItem(e -> {
+                            gui.close(e.getWhoClicked());
+                            String locale = Reflection.getLocale(player.getPlayer());
+                            if (!getPlugin().getConfigManager().getLocales().containsValue(locale)) return;
+
+                            player.setLocale(getPlugin().getConfigManager().byKey(locale));
+                        })
         );
         
-        for (String locale : this.getPlugin().getConfig().getStringList("languages")) {
+        for (String locale : this.getPlugin().getConfigManager().getLocales().keySet()) {
             String base = this.getPlugin().getLoader().getGuiConfig().getString("base." + locale);
 
             gui.addItem(ItemBuilder

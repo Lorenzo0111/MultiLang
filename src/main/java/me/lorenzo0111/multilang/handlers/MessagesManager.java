@@ -26,7 +26,9 @@ package me.lorenzo0111.multilang.handlers;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 
+import java.io.IOException;
 import java.util.Objects;
 
 public class MessagesManager {
@@ -34,6 +36,18 @@ public class MessagesManager {
 
     public static void setPlugin(MultiLangPlugin plugin) {
         MessagesManager.plugin = plugin;
+        plugin.getLogger().info(String.format("Loaded messages.yml. (File version: %s)", plugin.getLoader().getMessagesConfig().getString("version", "1.0")));
+    }
+
+    public static void update(String path, Object value) {
+        FileConfiguration config = plugin.getLoader().getMessagesConfig();
+        config.set(path,value);
+        try {
+            config.save(plugin.getLoader().getMessagesFile());
+            plugin.getLoader().reloadMessages();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static String get(String path) {

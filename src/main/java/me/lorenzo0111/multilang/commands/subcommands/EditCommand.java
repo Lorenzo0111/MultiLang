@@ -87,7 +87,7 @@ public class EditCommand extends SubCommand {
             return;
         }
 
-        if (!subcommand.getPlugin().getConfig().getStringList("languages").contains(localeName)) {
+        if (!subcommand.getPlugin().getConfigManager().getLocales().containsKey(localeName)) {
             player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("lang-not-found")));
             return;
         }

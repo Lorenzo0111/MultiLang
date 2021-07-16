@@ -72,8 +72,8 @@ public final class PluginLoader {
         }
 
         plugin.setConfigManager(new ConfigManager(plugin));
-        plugin.getConfigManager().parse();
         plugin.getConfigManager().register();
+        plugin.getConfigManager().parse();
         return true;
     }
 
@@ -122,6 +122,8 @@ public final class PluginLoader {
 
         this.reloadMessages();
         MessagesManager.setPlugin(plugin);
+        MessagesManager.update("version", plugin.getDescription().getVersion());
+        MessagesManager.update("gui.current-lore", "&7Click here to autodetect.");
     }
 
     public void reloadGui() {
@@ -154,5 +156,9 @@ public final class PluginLoader {
 
     public FileConfiguration getMessagesConfig() {
         return messagesConfig;
+    }
+
+    public File getMessagesFile() {
+        return messagesFile;
     }
 }

@@ -54,6 +54,8 @@ public class ChatAdapter extends PacketAdapter {
 
         // Get the component
         WrappedChatComponent component = packet.getChatComponents().read(0);
+        if (component == null) return;
+
         JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
 
         // If it has some text, update it
