@@ -27,6 +27,7 @@ package me.lorenzo0111.multilang.listeners;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.cache.PlayersCache;
 import me.lorenzo0111.multilang.utils.Reflection;
+import me.lorenzo0111.pluginslib.audience.BukkitAudienceManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -52,7 +53,7 @@ public class JoinListener implements Listener {
         });
 
         if (event.getPlayer().hasPermission("multilang.admin"))
-            plugin.getUpdater().sendUpdateCheck(event.getPlayer());
+            plugin.getUpdater().sendUpdateCheck(BukkitAudienceManager.audience(event.getPlayer()));
 
     }
 }

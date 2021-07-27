@@ -39,9 +39,11 @@ import me.lorenzo0111.multilang.protocol.PacketHandler;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
+import me.lorenzo0111.pluginslib.audience.BukkitAudienceManager;
 import me.lorenzo0111.pluginslib.database.connection.IConnectionHandler;
 import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
+import me.lorenzo0111.pluginslib.scheduler.BukkitScheduler;
 import me.lorenzo0111.pluginslib.updater.UpdateChecker;
 import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
@@ -84,6 +86,7 @@ public final class MultiLangPlugin extends JavaPlugin {
     }
 
     private void loadPlugin() {
+        BukkitAudienceManager.init(this);
         try {
             this.updateConfig();
         } catch (IOException e) {
@@ -115,7 +118,7 @@ public final class MultiLangPlugin extends JavaPlugin {
         loader.messages();
         loader.metrics();
 
-        this.updater = new UpdateChecker(this,93235,"https://www.spigotmc.org/resources/93235/",null);
+        this.updater = new UpdateChecker(new BukkitScheduler(this),this.getDescription().getVersion(), this.getName(),93235,"https://www.spigotmc.org/resources/93235/",null,null);
 
         try {
             this.resetConnection();
@@ -132,6 +135,7 @@ public final class MultiLangPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        BukkitAudienceManager.shutdown();
         this.configManager.unregisterAll();
         Bukkit.getScheduler().cancelTasks(this);
         if (protocol != null)
@@ -213,7 +217,7 @@ public final class MultiLangPlugin extends JavaPlugin {
         if (connection == null) throw new ReloadException("Connection cannot be null");
 
         Table playersTable = new Table
-                (this,
+                (new BukkitScheduler(this),
                         connection,
                         "multilang_players",
                         Arrays.asList(

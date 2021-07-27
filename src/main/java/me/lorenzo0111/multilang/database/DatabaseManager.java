@@ -74,7 +74,7 @@ public final class DatabaseManager {
 
         switch (plugin.getStorageType()) {
             case FILE:
-                return new SQLiteConnection(plugin);
+                return new SQLiteConnection(plugin.getDataFolder().toPath());
             case MYSQL:
                 config.setPoolName("MultiLang MySQL Connection Pool");
                 config.setDataSourceClassName(driver.getName());
