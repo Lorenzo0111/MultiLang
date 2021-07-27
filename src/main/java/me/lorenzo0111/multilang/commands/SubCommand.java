@@ -26,21 +26,21 @@ package me.lorenzo0111.multilang.commands;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.pluginslib.audience.User;
-import me.lorenzo0111.pluginslib.command.Command;
+import me.lorenzo0111.pluginslib.command.ICommand;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 public abstract class SubCommand extends me.lorenzo0111.pluginslib.command.SubCommand {
-    private final Command command;
+    private final ICommand<MultiLangPlugin> command;
 
-    public SubCommand(Command command) {
+    public SubCommand(ICommand<MultiLangPlugin> command) {
         super(command);
 
         this.command = command;
     }
 
     public MultiLangPlugin getPlugin() {
-        return (MultiLangPlugin) this.getCommand().getPlugin();
+        return this.getCommand().getPlugin();
     }
 
     public String format(String message) {
@@ -61,7 +61,7 @@ public abstract class SubCommand extends me.lorenzo0111.pluginslib.command.SubCo
     public abstract void handleSubcommand(CommandSender sender, String[] args);
 
     @Override
-    public Command getCommand() {
+    public ICommand<MultiLangPlugin> getCommand() {
         return command;
     }
 }

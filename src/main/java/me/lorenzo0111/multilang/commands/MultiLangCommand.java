@@ -24,28 +24,32 @@
 
 package me.lorenzo0111.multilang.commands;
 
+import me.lorenzo0111.multilang.MultiLangPlugin;
+import me.lorenzo0111.multilang.commands.executor.SubcommandExecutor;
 import me.lorenzo0111.multilang.commands.subcommands.EditCommand;
 import me.lorenzo0111.multilang.commands.subcommands.GetCommand;
 import me.lorenzo0111.multilang.commands.subcommands.GuiCommand;
 import me.lorenzo0111.multilang.commands.subcommands.HelpCommand;
-import me.lorenzo0111.pluginslib.command.Command;
 import me.lorenzo0111.pluginslib.command.Customization;
+import me.lorenzo0111.pluginslib.command.ICommand;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
+import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class MultiLangCommand extends Command implements TabExecutor {
+public class MultiLangCommand extends ICommand<MultiLangPlugin> implements TabExecutor {
+    private List<SubCommand> subcommands;
 
     @Permission(value = "multilang.command",msg = "&8[&9MultiLang&8] &cYou do not have the permission to execute this command.")
     @SuppressWarnings("unchecked")
-    public MultiLangCommand(JavaPlugin plugin, String command, @Nullable Customization customization) {
+    public MultiLangCommand(MultiLangPlugin plugin, String command, @Nullable Customization customization) {
         super(plugin, command, customization);
 
         this.addSubcommand(new EditCommand(this));
@@ -54,8 +58,8 @@ public class MultiLangCommand extends Command implements TabExecutor {
 
         try {
             Field subcommands = this.getClass().getSuperclass().getDeclaredField("subcommands");
-            List<SubCommand> o = (List<SubCommand>) subcommands.get(this);
-            this.addSubcommand(new HelpCommand(this,o));
+            this.subcommands = (List<SubCommand>) subcommands.get(this);
+            this.addSubcommand(new HelpCommand(this,this.subcommands));
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -74,5 +78,16 @@ public class MultiLangCommand extends Command implements TabExecutor {
             l.add("<language>");
 
         return l;
+    }
+
+    @Override
+    public void register(String s) {
+        Objects.requireNonNull(getPlugin().getCommand(s)).setExecutor(this);
+    }
+
+    @Override
+    public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
+        return SubcommandExecutor.execute(this,sender,args);
+
     }
 }

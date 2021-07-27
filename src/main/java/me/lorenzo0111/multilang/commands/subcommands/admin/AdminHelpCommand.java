@@ -24,15 +24,16 @@
 
 package me.lorenzo0111.multilang.commands.subcommands.admin;
 
+import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.commands.subcommands.HelpCommand;
-import me.lorenzo0111.pluginslib.command.Command;
+import me.lorenzo0111.pluginslib.command.ICommand;
 
 import java.util.List;
 
 public class AdminHelpCommand extends HelpCommand {
 
-    public AdminHelpCommand(Command command, List<SubCommand> subCommands) {
+    public AdminHelpCommand(ICommand<MultiLangPlugin> command, List<SubCommand> subCommands) {
         super(command, subCommands);
     }
 

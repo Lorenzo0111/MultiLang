@@ -24,9 +24,10 @@
 
 package me.lorenzo0111.multilang.commands.subcommands.admin;
 
+import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.debug.DebugUtils;
-import me.lorenzo0111.pluginslib.command.Command;
+import me.lorenzo0111.pluginslib.command.ICommand;
 import me.lorenzo0111.pluginslib.debugger.Debugger;
 import org.bukkit.command.CommandSender;
 
@@ -35,7 +36,7 @@ import java.io.IOException;
 
 public class DebugCommand extends SubCommand {
 
-    public DebugCommand(Command command) {
+    public DebugCommand(ICommand<MultiLangPlugin> command) {
         super(command);
     }
 

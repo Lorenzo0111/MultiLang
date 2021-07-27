@@ -24,9 +24,10 @@
 
 package me.lorenzo0111.multilang.commands.subcommands;
 
+import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
-import me.lorenzo0111.pluginslib.command.Command;
+import me.lorenzo0111.pluginslib.command.ICommand;
 import org.bukkit.command.CommandSender;
 
 import java.util.HashMap;
@@ -36,7 +37,7 @@ import java.util.Map;
 public class HelpCommand extends SubCommand {
     private final Map<String,String> commands = new HashMap<>();
 
-    public HelpCommand(Command command, List<SubCommand> subCommands) {
+    public HelpCommand(ICommand<MultiLangPlugin> command, List<SubCommand> subCommands) {
         super(command);
         subCommands.forEach((it) -> commands.put(it.getName(),it.getDescription()));
     }

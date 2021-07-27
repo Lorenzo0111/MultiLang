@@ -38,7 +38,7 @@ ext {
 apply from: "https://cdn.rocketplugins.space/spigot"
 
 group = "me.lorenzo0111"
-version = "1.3"
+version = "1.4"
 
 java {
     withJavadocJar()

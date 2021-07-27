@@ -27,12 +27,13 @@ package me.lorenzo0111.multilang.commands.subcommands;
 import com.cryptomorin.xseries.XMaterial;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.PaginatedGui;
+import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.multilang.utils.GuiUtils;
 import me.lorenzo0111.multilang.utils.Reflection;
-import me.lorenzo0111.pluginslib.command.Command;
+import me.lorenzo0111.pluginslib.command.ICommand;
 import me.lorenzo0111.pluginslib.command.annotations.NoArguments;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
 import net.kyori.adventure.text.Component;
@@ -43,7 +44,7 @@ import java.util.Objects;
 
 public class GuiCommand extends SubCommand {
 
-    public GuiCommand(Command command) {
+    public GuiCommand(ICommand<MultiLangPlugin> command) {
         super(command);
     }
 

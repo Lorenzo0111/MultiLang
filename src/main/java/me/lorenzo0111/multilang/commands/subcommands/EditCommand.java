@@ -24,13 +24,14 @@
 
 package me.lorenzo0111.multilang.commands.subcommands;
 
+import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.events.ChangeLocaleEvent;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
 import me.lorenzo0111.multilang.utils.Conditions;
-import me.lorenzo0111.pluginslib.command.Command;
+import me.lorenzo0111.pluginslib.command.ICommand;
 import me.lorenzo0111.pluginslib.command.annotations.AnyArgument;
 import me.lorenzo0111.pluginslib.command.annotations.Permission;
 import org.bukkit.Bukkit;
@@ -39,7 +40,7 @@ import org.bukkit.entity.Player;
 
 public class EditCommand extends SubCommand {
 
-    public EditCommand(Command command) {
+    public EditCommand(ICommand<MultiLangPlugin> command) {
         super(command);
     }
 

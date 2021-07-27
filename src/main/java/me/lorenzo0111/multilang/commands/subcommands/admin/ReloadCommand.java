@@ -26,10 +26,10 @@ package me.lorenzo0111.multilang.commands.subcommands.admin;
 
 import com.cryptomorin.xseries.XSound;
 import me.lorenzo0111.multilang.MultiLangPlugin;
+import me.lorenzo0111.multilang.commands.AdminLangCommand;
 import me.lorenzo0111.multilang.commands.SubCommand;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.protocol.adapter.EntityAdapter;
-import me.lorenzo0111.pluginslib.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -38,7 +38,7 @@ import java.sql.SQLException;
 
 public class ReloadCommand extends SubCommand {
 
-    public ReloadCommand(Command command) {
+    public ReloadCommand(AdminLangCommand command) {
         super(command);
     }
 
