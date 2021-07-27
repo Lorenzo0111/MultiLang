@@ -37,6 +37,7 @@ import me.lorenzo0111.pluginslib.command.annotations.Permission;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 public class EditCommand extends SubCommand {
 
@@ -82,7 +83,7 @@ public class EditCommand extends SubCommand {
         setLang(player,lang,this);
     }
 
-    public static void setLang(LocalizedPlayer player, String localeName, SubCommand subcommand) {
+    public static void setLang(@NotNull LocalizedPlayer player, String localeName, SubCommand subcommand) {
         if (player.getLocale().getName().equalsIgnoreCase(localeName)) {
             player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("already")));
             return;

@@ -28,6 +28,7 @@ import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.executor.SubcommandExecutor;
 import me.lorenzo0111.multilang.commands.subcommands.admin.AdminHelpCommand;
 import me.lorenzo0111.multilang.commands.subcommands.admin.DebugCommand;
+import me.lorenzo0111.multilang.commands.subcommands.admin.DetectCommand;
 import me.lorenzo0111.multilang.commands.subcommands.admin.ReloadCommand;
 import me.lorenzo0111.pluginslib.command.Customization;
 import me.lorenzo0111.pluginslib.command.ICommand;
@@ -51,6 +52,7 @@ public class AdminLangCommand extends ICommand<MultiLangPlugin> implements TabEx
         super(plugin, command, customization);
 
         this.addSubcommand(new ReloadCommand(this));
+        this.addSubcommand(new DetectCommand(this));
         this.addSubcommand(new DebugCommand(this));
         try {
             Field subcommands = this.getClass().getSuperclass().getDeclaredField("subcommands");
