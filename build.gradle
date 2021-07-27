@@ -26,7 +26,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 plugins {
     id "java"
     id "com.github.johnrengelman.shadow" version "7.0.0"
-    id "net.kyori.indra.publishing" version "2.0.5"
+    id "net.kyori.indra.publishing" version "2.0.6"
     id "io.github.slimjar" version "1.2.1"
     id "org.sonarqube" version "3.3"
 }
@@ -67,7 +67,7 @@ dependencies {
     slim("com.github.cryptomorin:XSeries:8.2.0")
     slim("net.kyori:adventure-api:4.8.1")
     slim("net.kyori:adventure-text-serializer-legacy:4.8.1")
-    slim("mysql:mysql-connector-java:8.0.25")
+    slim("mysql:mysql-connector-java:8.0.26")
     slim("org.xerial:sqlite-jdbc:3.36.0.1")
 }
 
