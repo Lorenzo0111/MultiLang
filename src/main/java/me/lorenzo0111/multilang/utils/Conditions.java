@@ -26,12 +26,13 @@ package me.lorenzo0111.multilang.utils;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.Locale;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public final class Conditions {
 
-    public static void localeValid(Locale locale) {
+    public static void localeValid(@NotNull Locale locale) {
         if (!locale.getName().toLowerCase().equals(locale.getName())) throw new IllegalStateException("Locale name must be lowercase");
 
         Map<String,String> locales = MultiLangPlugin.getInstance()

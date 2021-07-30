@@ -83,6 +83,22 @@ public class EditCommand extends SubCommand {
         setLang(player,lang,this);
     }
 
+    public static void setLang(@NotNull LocalizedPlayer player, Locale locale, SubCommand subcommand) {
+        if (player.getLocale().equals(locale)) {
+            player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("already")));
+            return;
+        }
+
+        Conditions.localeValid(locale);
+
+        ChangeLocaleEvent event = new ChangeLocaleEvent(player,locale);
+        Bukkit.getPluginManager().callEvent(event);
+        if (event.isCancelled()) return;
+
+        player.setLocale(event.getLocale());
+        player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("changed"),locale.getName()));
+    }
+
     public static void setLang(@NotNull LocalizedPlayer player, String localeName, SubCommand subcommand) {
         if (player.getLocale().getName().equalsIgnoreCase(localeName)) {
             player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("already")));
@@ -95,14 +111,7 @@ public class EditCommand extends SubCommand {
         }
 
         Locale locale = new Locale(localeName,subcommand.getPlugin().getConfigManager().getLocales().get(localeName));
-        ChangeLocaleEvent event = new ChangeLocaleEvent(player,locale);
-        Bukkit.getPluginManager().callEvent(event);
-        if (event.isCancelled()) return;
-
-        Conditions.localeValid(event.getLocale());
-
-        player.setLocale(event.getLocale());
-        player.getPlayer().sendMessage(subcommand.format(MessagesManager.get("changed"),localeName));
+        setLang(player,locale,subcommand);
     }
 
 }

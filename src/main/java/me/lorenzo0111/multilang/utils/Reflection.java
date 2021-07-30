@@ -27,13 +27,14 @@ package me.lorenzo0111.multilang.utils;
 import com.cryptomorin.xseries.ReflectionUtils;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public final class Reflection {
 
-    public static String getLocale(Player player) {
+    public static @Nullable String getLocale(Player player) {
 
         try {
 
@@ -48,7 +49,7 @@ public final class Reflection {
         return logBefore(locale != null, locale, "Found player locale: %s");
     }
 
-    public static String legacyLocale(Player player) {
+    public static @Nullable String legacyLocale(Player player) {
 
         try {
             Class<? extends Player.Spigot> spigot = player.spigot().getClass();
@@ -61,13 +62,13 @@ public final class Reflection {
 
     }
 
-    public static <T> T logBefore(boolean condition, T object, String message) {
+    private static <T> T logBefore(boolean condition, T object, String message) {
         if (!condition) return object;
 
         return logBefore(object,message);
     }
 
-    public static <T> T logBefore(T object, String message) {
+    private static <T> T logBefore(T object, String message) {
         MultiLangPlugin.getInstance().debug(String.format(message,object));
         return object;
     }

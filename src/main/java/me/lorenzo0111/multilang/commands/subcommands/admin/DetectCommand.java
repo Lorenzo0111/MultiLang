@@ -41,7 +41,7 @@ public class DetectCommand extends SubCommand {
         }
 
         LocalizedPlayer player = LocalizedPlayer.from(target);
-        EditCommand.setLang(player, Reflection.getLocale(target), this);
+        EditCommand.setLang(player, this.getPlugin().getConfigManager().byKey(Reflection.getLocale(target)), this);
         sender.sendMessage(ChatColor.translateAlternateColorCodes('&', getPlugin().getConfig("prefix") + "&7Locale autodetected to &9" + player.getLocale().getName()));
     }
 }
