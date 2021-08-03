@@ -50,8 +50,9 @@ repositories {
     maven { url 'https://jitpack.io' }
     maven { url 'https://repo.codemc.org/repository/maven-snapshots/' }
     maven { url 'https://repo.repsy.io/mvn/lorenzo0111/public' }
-    maven { url = "https://repo.mattstudios.me/artifactory/public/" }
+    maven { url 'https://repo.mattstudios.me/artifactory/public/' }
     maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/'}
     maven { url "https://repo.dmulloy2.net/repository/public/" }
     maven { url "https://repo.vshnv.tech/releases/" }
 }
