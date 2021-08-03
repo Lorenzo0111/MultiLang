@@ -58,7 +58,7 @@ repositories {
 }
 
 dependencies {
-    implementation("space.rocketplugins.pluginslib:bukkit:2.0.2")
+    implementation("space.rocketplugins.pluginslib:bukkit:2.0.2.1")
     implementation("io.github.slimjar:slimjar:1.2.4")
     implementation("dev.triumphteam:triumph-gui:3.0.3")
     implementation("com.zaxxer:HikariCP:5.0.0")
