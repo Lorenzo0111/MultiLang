@@ -38,7 +38,7 @@ ext {
 apply from: "https://cdn.rocketplugins.space/spigot"
 
 group = "me.lorenzo0111"
-version = "1.4"
+version = "1.5"
 
 java {
     withJavadocJar()
@@ -70,6 +70,7 @@ dependencies {
     slim("net.kyori:adventure-text-serializer-legacy:4.8.1")
     slim("mysql:mysql-connector-java:8.0.26")
     slim("org.xerial:sqlite-jdbc:3.36.0.1")
+    slim('org.slf4j:slf4j-simple:1.7.32')
 }
 
 sonarqube {
