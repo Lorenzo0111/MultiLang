@@ -61,10 +61,10 @@ dependencies {
     implementation("space.rocketplugins.pluginslib:bukkit:2.0.2.1")
     implementation("io.github.slimjar:slimjar:1.2.5")
     implementation("dev.triumphteam:triumph-gui:3.0.3")
-    implementation("com.zaxxer:HikariCP:5.0.0")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.lorenzo0111:RocketPlaceholders:1.9.2")
+    slim("com.zaxxer:HikariCP:4.0.0")
     slim("com.github.cryptomorin:XSeries:8.3.0")
     slim("net.kyori:adventure-api:4.8.1")
     slim("net.kyori:adventure-text-serializer-legacy:4.8.1")
@@ -95,7 +95,6 @@ shadowJar {
     relocate("google","${libsBase}.google")
     relocate("org.sqlite.native","${libsBase}.jdbc.sqlite")
     relocate("com.cryptomorin.xseries","${libsBase}.xseries")
-    relocate("com.zaxxer.hikari","${libsBase}.hikari")
 }
 
 
