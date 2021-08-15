@@ -64,7 +64,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.lorenzo0111:RocketPlaceholders:1.9.2")
-    slim("com.zaxxer:HikariCP:4.0.0")
+    slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.3.0")
     slim("net.kyori:adventure-api:4.8.1")
     slim("net.kyori:adventure-text-serializer-legacy:4.8.1")
