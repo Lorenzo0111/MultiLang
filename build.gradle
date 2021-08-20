@@ -59,7 +59,7 @@ repositories {
 
 dependencies {
     implementation("space.rocketplugins.pluginslib:bukkit:2.0.2.1")
-    implementation("io.github.slimjar:slimjar:1.2.5")
+    implementation("io.github.slimjar:slimjar:1.2.6")
     implementation("dev.triumphteam:triumph-gui:3.0.3")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
