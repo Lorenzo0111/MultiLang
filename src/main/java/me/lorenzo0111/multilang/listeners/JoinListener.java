@@ -47,14 +47,16 @@ public class JoinListener implements Listener {
         .thenAccept((player) -> {
             // Run after 2 seconds because spigot does not fetch it instantly
 
-            Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
-                plugin.debug(String.format("Trying to autodetect %s(%s) language..",event.getPlayer().getName(),event.getPlayer().getUniqueId()));
-                String locale = Reflection.getLocale(event.getPlayer());
+            if (plugin.getConfig().getBoolean("auto-detect")) {
+                Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, () -> {
+                    plugin.debug(String.format("Trying to autodetect %s(%s) language..",event.getPlayer().getName(),event.getPlayer().getUniqueId()));
+                    String locale = Reflection.getLocale(event.getPlayer());
 
-                if (player != null &&
-                        !player.getLocale().getLocale().equals(locale))
-                    player.setLocale(plugin.getConfigManager().byKey(locale));
-            }, 40L);
+                    if (player != null &&
+                            !player.getLocale().getLocale().equals(locale))
+                        player.setLocale(plugin.getConfigManager().byKey(locale));
+                }, 40L);
+            }
         });
 
         if (event.getPlayer().hasPermission("multilang.admin"))

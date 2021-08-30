@@ -79,7 +79,7 @@ public final class PluginLoader {
 
     public void metrics() {
         new Metrics(plugin,11666)
-        .addCustomChart(new SimplePie("localesCount", () -> String.valueOf(plugin.getConfigManager().getLocales().size())));
+                .addCustomChart(new SimplePie("localesCount", () -> String.valueOf(plugin.getConfigManager().getLocales().size())));
     }
 
     public void api() {
@@ -92,7 +92,7 @@ public final class PluginLoader {
     public void commands() {
         plugin.getLogger().info("Registering commands..");
         String prefix = plugin.getConfig().getString("prefix");
-        final Customization customization = new Customization("&8[&9MultiLang&8] &7Running &9" + plugin.getDescription().getName() + " &7v&9" + plugin.getDescription().getVersion() + " &7by &9" + plugin.getDescription().getAuthors(),prefix + "&cCommand not found. Try to use &8/$cmd help&7.",prefix + "&7Run &8/$cmd help &7for a command list.");
+        final Customization customization = new Customization(null, prefix + "&cCommand not found. Try to use &8/$cmd help&7.",prefix + "&7Run &8/$cmd help &7for a command list.");
         AdminLangCommand acmd = new AdminLangCommand(plugin,"multilangadmin",customization);
         MultiLangCommand cmd = new MultiLangCommand(plugin,"multilang",customization);
         Objects.requireNonNull(plugin.getCommand("multilang")).setTabCompleter(cmd);

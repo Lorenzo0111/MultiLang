@@ -26,6 +26,9 @@ languages:
   english: "en_us"
   italiano: "it_it"
 
+# Warning: This feature is still experimental. It may not work with some languages.
+auto-detect: false
+
 strings:
   1:
     identifier: "example"

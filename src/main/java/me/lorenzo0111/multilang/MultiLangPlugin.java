@@ -82,10 +82,6 @@ public final class MultiLangPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        this.loadPlugin();
-    }
-
-    private void loadPlugin() {
         BukkitAudienceManager.init(this);
         try {
             this.updateConfig();
@@ -286,10 +282,6 @@ public final class MultiLangPlugin extends JavaPlugin {
 
     public UpdateChecker getUpdater() {
         return updater;
-    }
-
-    public PacketHandler getProtocol() {
-        return protocol;
     }
 
     public IMultiLangAPI getApi() {
