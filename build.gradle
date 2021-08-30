@@ -38,7 +38,7 @@ ext {
 apply from: "https://cdn.rocketplugins.space/spigot"
 
 group = "me.lorenzo0111"
-version = "1.5"
+version = "1.6"
 
 java {
     withJavadocJar()
@@ -47,13 +47,13 @@ java {
 
 repositories {
     mavenCentral()
-    maven { url 'https://jitpack.io' }
-    maven { url 'https://repo.codemc.org/repository/maven-snapshots/' }
-    maven { url 'https://repo.codemc.org/repository/maven-releases/' }
-    maven { url 'https://repo.repsy.io/mvn/lorenzo0111/public' }
-    maven { url 'https://repo.mattstudios.me/artifactory/public/' }
-    maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
-    maven { url 'https://oss.sonatype.org/content/repositories/snapshots/'}
+    maven { url "https://jitpack.io" }
+    maven { url "https://repo.codemc.org/repository/maven-snapshots/" }
+    maven { url "https://repo.codemc.org/repository/maven-releases/" }
+    maven { url "https://repo.repsy.io/mvn/lorenzo0111/public" }
+    maven { url "https://repo.mattstudios.me/artifactory/public/" }
+    maven { url "https://oss.sonatype.org/content/repositories/releases/" }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
     maven { url "https://repo.dmulloy2.net/repository/public/" }
     maven { url "https://repo.vshnv.tech/releases/" }
 }
@@ -71,7 +71,7 @@ dependencies {
     slim("net.kyori:adventure-text-serializer-legacy:4.8.1")
     slim("mysql:mysql-connector-java:8.0.26")
     slim("org.xerial:sqlite-jdbc:3.36.0.2")
-    slim('org.slf4j:slf4j-simple:1.7.32')
+    slim("org.slf4j:slf4j-simple:1.7.32")
 }
 
 sonarqube {

@@ -30,11 +30,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
-import me.lorenzo0111.multilang.utils.RegexChecker;
 import org.bukkit.entity.Player;
 
 public class ChatAdapter extends BaseAdapter {
@@ -56,29 +52,6 @@ public class ChatAdapter extends BaseAdapter {
         WrappedChatComponent component = packet.getChatComponents().read(0);
         if (component == null) return;
 
-        JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
-
-        // If it has some text, update it
-        if (json.has("text")) {
-            this.update(json, RegexChecker.replace(player, json.get("text").getAsString()));
-        }
-
-        // Iterate "extra", check if it has some text and update it
-        if (json.has("extra")) {
-
-            for (JsonElement element : json.get("extra").getAsJsonArray()) {
-                JsonObject object = element.getAsJsonObject();
-                if (!object.has("text")) continue;
-
-                String text = object.get("text").getAsString();
-
-                this.update(object, RegexChecker.replace(player,text));
-            }
-
-        }
-
-        // Update the component and the packet
-        component.setJson(json.toString());
-
+        this.handle(player,component);
     }
 }

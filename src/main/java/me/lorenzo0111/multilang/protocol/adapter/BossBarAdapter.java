@@ -19,6 +19,12 @@ public class BossBarAdapter extends BaseAdapter {
     public void onPacketSending(@NotNull PacketEvent event) {
         PacketContainer packet = event.getPacket();
 
+        if (MinecraftVersion.CAVES_CLIFFS_1.atOrAbove()) {
+            if (packet.getStructures().read(1).getChatComponents().size() != 1) return;
+        } else {
+            if (packet.getChatComponents().size() < 1) return;
+        }
+
         WrappedChatComponent component;
 
         if (MinecraftVersion.CAVES_CLIFFS_1.atOrAbove()) {
@@ -27,12 +33,12 @@ public class BossBarAdapter extends BaseAdapter {
             component = packet.getChatComponents().read(0);
         }
 
-        this.handle(event.getPlayer(),component, () -> {
-            if (MinecraftVersion.CAVES_CLIFFS_1.atOrAbove()) {
-                packet.getStructures().read(1).getChatComponents().write(0, component);
-            } else {
-                packet.getChatComponents().write(0, component);
-            }
-        });
+        this.handle(event.getPlayer(),component);
+
+        if (MinecraftVersion.CAVES_CLIFFS_1.atOrAbove()) {
+            packet.getStructures().read(1).getChatComponents().write(0,component);
+        } else {
+            packet.getChatComponents().write(0, component);
+        }
     }
 }

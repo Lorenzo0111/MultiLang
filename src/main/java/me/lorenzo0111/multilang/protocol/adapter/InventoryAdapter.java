@@ -54,7 +54,7 @@ public class InventoryAdapter extends BaseAdapter {
             if (!json.has("text")) return;
 
             // Edit packet
-            this.handle(event.getPlayer(),component, () -> event.getPacket().getChatComponents().write(0,component));
+            this.handle(event.getPlayer(),component);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error has occurred while handling packets", e);
         }

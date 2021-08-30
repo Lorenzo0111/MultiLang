@@ -4,6 +4,7 @@ import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
@@ -17,14 +18,26 @@ public abstract class BaseAdapter extends PacketAdapter {
         super(plugin, listenerPriority, type);
     }
 
-    public void handle(Player player, @NotNull WrappedChatComponent component, @NotNull Runnable save) {
+    public void handle(Player player, @NotNull WrappedChatComponent component) {
         JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
 
-        this.update(json, RegexChecker.replace(player, json));
+        if (json.has("text")) {
+            this.update(json, RegexChecker.replace(player, json));
+        }
+
+        // Iterate "extra", check if it has some text and update it
+        if (json.has("extra")) {
+
+            for (JsonElement element : json.get("extra").getAsJsonArray()) {
+                JsonObject object = element.getAsJsonObject();
+                if (!object.has("text")) continue;
+
+                this.update(object, RegexChecker.replace(player,object));
+            }
+
+        }
 
         component.setJson(json.toString());
-
-        save.run();
     }
 
     protected void update(@NotNull JsonObject object, String value) {

@@ -31,7 +31,6 @@ import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.cache.PlayersCache;
 import me.lorenzo0111.multilang.data.StorageType;
 import me.lorenzo0111.multilang.database.DatabaseManager;
-import me.lorenzo0111.multilang.dependency.DependencyManager;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
 import me.lorenzo0111.multilang.listeners.JoinListener;
@@ -43,6 +42,7 @@ import me.lorenzo0111.pluginslib.audience.BukkitAudienceManager;
 import me.lorenzo0111.pluginslib.database.connection.IConnectionHandler;
 import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
+import me.lorenzo0111.pluginslib.dependency.DependencyManager;
 import me.lorenzo0111.pluginslib.scheduler.BukkitScheduler;
 import me.lorenzo0111.pluginslib.updater.UpdateChecker;
 import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
@@ -64,7 +64,7 @@ public final class MultiLangPlugin extends JavaPlugin {
     private IRocketPlaceholdersAPI rocketPlaceholdersAPI;
     private ConfigManager configManager;
     private PluginLoader loader;
-    private static MultiLangPlugin instance;
+    private static MultiLangPlugin instance = null;
     private DatabaseManager databaseManager;
     private final Cache<UUID,LocalizedPlayer> playerCache = new PlayersCache();
     private File cacheFolder;
@@ -82,6 +82,11 @@ public final class MultiLangPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        if (instance == null) {
+            this.getLogger().warning("Detected plugin reload. Please do not use /reload.");
+            this.onLoad();
+        }
+
         BukkitAudienceManager.init(this);
         try {
             this.updateConfig();
@@ -237,7 +242,7 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.getLogger().info("Note: This might take a few minutes on first run.");
 
         try {
-            long time = new DependencyManager(this)
+            long time = new DependencyManager(this.getName(), this.getDataFolder().toPath())
                     .build();
             this.getLogger().info(String.format("Loaded libraries in %sms.", time));
         } catch (ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException | IOException e) {
