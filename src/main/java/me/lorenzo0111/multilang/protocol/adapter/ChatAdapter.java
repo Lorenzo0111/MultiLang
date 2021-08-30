@@ -26,7 +26,6 @@ package me.lorenzo0111.multilang.protocol.adapter;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
@@ -38,7 +37,8 @@ import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.utils.RegexChecker;
 import org.bukkit.entity.Player;
 
-public class ChatAdapter extends PacketAdapter {
+public class ChatAdapter extends BaseAdapter {
+
     public ChatAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority) {
         super(plugin, listenerPriority, PacketType.Play.Server.CHAT);
     }
@@ -79,11 +79,6 @@ public class ChatAdapter extends PacketAdapter {
 
         // Update the component and the packet
         component.setJson(json.toString());
-        packet.getChatComponents().write(0,component);
-    }
 
-    private void update(JsonObject object, String value) {
-        object.remove("text");
-        object.addProperty("text",value);
     }
 }

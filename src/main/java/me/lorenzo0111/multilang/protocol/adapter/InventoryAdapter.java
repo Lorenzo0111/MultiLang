@@ -26,18 +26,16 @@ package me.lorenzo0111.multilang.protocol.adapter;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
-import me.lorenzo0111.multilang.utils.RegexChecker;
 
 import java.util.logging.Level;
 
-public class InventoryAdapter extends PacketAdapter {
+public class InventoryAdapter extends BaseAdapter {
     private final MultiLangPlugin plugin;
 
     public InventoryAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority) {
@@ -55,16 +53,8 @@ public class InventoryAdapter extends PacketAdapter {
 
             if (!json.has("text")) return;
 
-            String text = json.get("text").getAsString();
-            String replaced = RegexChecker.replace(event.getPlayer(), text);
-
-            // Replace the text
-            json.remove("text");
-            json.addProperty("text", replaced);
-            component.setJson(json.toString());
-
             // Edit packet
-            event.getPacket().getChatComponents().write(0,component);
+            this.handle(event.getPlayer(),component, () -> event.getPacket().getChatComponents().write(0,component));
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error has occurred while handling packets", e);
         }

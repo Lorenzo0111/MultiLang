@@ -24,9 +24,11 @@
 
 package me.lorenzo0111.multilang.utils;
 
+import com.google.gson.JsonObject;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -36,7 +38,11 @@ public final class RegexChecker {
 
     private RegexChecker() {}
 
-    public static String replace(Player player, String string) {
+    public static @NotNull String replace(Player player, @NotNull JsonObject json) {
+        return replace(player,json.get("text").getAsString());
+    }
+
+    public static @NotNull String replace(Player player, String string) {
         final Matcher matcher = PATTERN.matcher(string);
 
         final StringBuffer buffer = new StringBuffer();

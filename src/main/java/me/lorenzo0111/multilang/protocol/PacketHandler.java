@@ -28,6 +28,7 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketListener;
 import me.lorenzo0111.multilang.MultiLangPlugin;
+import me.lorenzo0111.multilang.protocol.adapter.BossBarAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.ChatAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.EntityAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.InventoryAdapter;
@@ -56,6 +57,7 @@ public class PacketHandler {
 
         listeners.add(new InventoryAdapter(plugin, ListenerPriority.NORMAL));
         listeners.add(new ChatAdapter(plugin, ListenerPriority.NORMAL));
+        listeners.add(new BossBarAdapter(plugin, ListenerPriority.NORMAL));
 
         listeners.forEach(manager::addPacketListener);
     }
