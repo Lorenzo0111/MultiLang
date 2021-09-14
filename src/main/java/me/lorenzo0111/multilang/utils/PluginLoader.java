@@ -31,9 +31,12 @@ import me.lorenzo0111.multilang.commands.AdminLangCommand;
 import me.lorenzo0111.multilang.commands.MultiLangCommand;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
 import me.lorenzo0111.multilang.handlers.MessagesManager;
+import me.lorenzo0111.multilang.hooks.LegacyRocketPlaceholdersHook;
+import me.lorenzo0111.multilang.hooks.RocketPlaceholdersHook;
 import me.lorenzo0111.pluginslib.command.Customization;
 import me.lorenzo0111.pluginslib.config.ConfigExtractor;
 import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
+import me.lorenzo0111.rocketplaceholders.storage.StorageManager;
 import org.bstats.bukkit.Metrics;
 import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
@@ -44,6 +47,7 @@ import org.bukkit.plugin.ServicePriority;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Objects;
 
 public final class PluginLoader {
@@ -65,6 +69,16 @@ public final class PluginLoader {
         if (api != null) {
             plugin.getLogger().info("RocketPlaceholders hooked!");
             plugin.setRocketPlaceholdersAPI(api);
+
+            try {
+                Class.forName("me.lorenzo0111.rocketplaceholders.hooks.PapiHook");
+
+                plugin.getLogger().info("Found RocketPlaceholders 2.0, registering custom provider");
+                plugin.setHook(new RocketPlaceholdersHook(new StorageManager()));
+            } catch (ClassNotFoundException ignored) {
+                plugin.setHook(new LegacyRocketPlaceholdersHook(new ArrayList<>()));
+            }
+
         } else {
             plugin.getLogger().severe("Unable to find RocketPlaceholdersAPI, disabling..");
             plugin.getServer().getPluginManager().disablePlugin(plugin);

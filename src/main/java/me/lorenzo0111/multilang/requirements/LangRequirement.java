@@ -36,7 +36,7 @@ public class LangRequirement extends Requirement {
     private final MultiLangPlugin plugin;
 
     public LangRequirement(MultiLangPlugin plugin, Locale locale) {
-        super(null);
+        super();
         this.locale = locale;
         this.plugin = plugin;
     }

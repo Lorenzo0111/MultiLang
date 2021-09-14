@@ -33,6 +33,7 @@ import me.lorenzo0111.multilang.data.StorageType;
 import me.lorenzo0111.multilang.database.DatabaseManager;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.handlers.ConfigManager;
+import me.lorenzo0111.multilang.hooks.Hook;
 import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.protocol.PacketHandler;
 import me.lorenzo0111.multilang.storage.StorageManager;
@@ -62,6 +63,7 @@ import java.util.logging.Level;
 public final class MultiLangPlugin extends JavaPlugin {
     private IMultiLangAPI api;
     private IRocketPlaceholdersAPI rocketPlaceholdersAPI;
+    private Hook hook;
     private ConfigManager configManager;
     private PluginLoader loader;
     private static MultiLangPlugin instance = null;
@@ -167,12 +169,24 @@ public final class MultiLangPlugin extends JavaPlugin {
         }
     }
 
-    public IRocketPlaceholdersAPI getRocketPlaceholdersAPI() {
-        return rocketPlaceholdersAPI;
+    public void register() {
+        this.getHook().register(rocketPlaceholdersAPI);
+    }
+
+    public void unregister() {
+        this.getHook().unregister(rocketPlaceholdersAPI);
+    }
+
+    public Hook getHook() {
+        return hook;
     }
 
     public void setRocketPlaceholdersAPI(IRocketPlaceholdersAPI rocketPlaceholdersAPI) {
         this.rocketPlaceholdersAPI = rocketPlaceholdersAPI;
+    }
+
+    public void setHook(Hook hook) {
+        this.hook = hook;
     }
 
     public void setConfigManager(ConfigManager configManager) {

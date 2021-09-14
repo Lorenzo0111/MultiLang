@@ -41,7 +41,6 @@ public class ConfigManager {
     private Locale defaultLocale;
     private final Map<String,String> keysMap = new HashMap<>();
     private final MultiLangPlugin plugin;
-    private final List<Placeholder> addedPlaceholders = new ArrayList<>();
     public ConfigManager(MultiLangPlugin plugin) {
         this.plugin = plugin;
     }
@@ -88,8 +87,8 @@ public class ConfigManager {
 
         }
 
+        this.plugin.register();
         final long time = System.currentTimeMillis() - before;
-
         plugin.getLogger().info("Loaded all placeholders in " + time + "ms");
     }
 
@@ -113,15 +112,13 @@ public class ConfigManager {
 
         localesMap.forEach((locale,string) -> conditions.add(new ConditionNode(new LangRequirement(plugin,locale),string)));
 
-        Placeholder placeholder = new Placeholder(null,identifier,plugin,defaultText,conditions);
+        Placeholder placeholder = new Placeholder(identifier,plugin,defaultText,conditions, null);
 
-        plugin.getRocketPlaceholdersAPI().addPlaceholder(placeholder);
-
-        addedPlaceholders.add(placeholder);
+        plugin.getHook().addPlaceholder(placeholder);
     }
 
     public void unregisterAll() {
-        addedPlaceholders.forEach(item -> plugin.getRocketPlaceholdersAPI().removePlaceholder(item.getIdentifier()));
+        plugin.unregister();
         this.plugin.getStorage().getInternal().clear();
     }
 
