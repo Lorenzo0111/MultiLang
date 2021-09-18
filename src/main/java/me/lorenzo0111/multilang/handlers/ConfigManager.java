@@ -30,7 +30,6 @@ import me.lorenzo0111.multilang.api.objects.LocalizedString;
 import me.lorenzo0111.multilang.exceptions.ConfigException;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.requirements.LangRequirement;
-import me.lorenzo0111.rocketplaceholders.creator.Placeholder;
 import me.lorenzo0111.rocketplaceholders.creator.conditions.ConditionNode;
 import org.bukkit.configuration.ConfigurationSection;
 import org.jetbrains.annotations.Nullable;
@@ -112,9 +111,7 @@ public class ConfigManager {
 
         localesMap.forEach((locale,string) -> conditions.add(new ConditionNode(new LangRequirement(plugin,locale),string)));
 
-        Placeholder placeholder = new Placeholder(identifier,plugin,defaultText,conditions, null);
-
-        plugin.getHook().addPlaceholder(placeholder);
+        plugin.getHook().addPlaceholder(identifier,plugin,defaultText,conditions);
     }
 
     public void unregisterAll() {
