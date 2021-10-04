@@ -68,7 +68,7 @@ dependencies {
     slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.4.0")
     slim("net.kyori:adventure-api:4.9.1")
-    slim("net.kyori:adventure-text-serializer-legacy:4.9.1")
+    slim("net.kyori:adventure-text-serializer-legacy:4.9.2")
     slim("mysql:mysql-connector-java:8.0.26")
     slim("org.xerial:sqlite-jdbc:3.36.0.3")
     slim("org.slf4j:slf4j-simple:1.7.32")
