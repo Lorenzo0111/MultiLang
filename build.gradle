@@ -55,11 +55,11 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/"}
     maven { url "https://repo.dmulloy2.net/repository/public/" }
-    maven { url "https://repo.vshnv.tech/releases/" }
+    maven { url "https://dl.rocketplugins.space/" }
 }
 
 dependencies {
-    implementation("space.rocketplugins.pluginslib:bukkit:2.0.2.1")
+    implementation("space.rocketplugins.pluginslib:bukkit:2.0.3")
     implementation("io.github.slimjar:slimjar:1.2.6")
     implementation("dev.triumphteam:triumph-gui:3.0.4")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")

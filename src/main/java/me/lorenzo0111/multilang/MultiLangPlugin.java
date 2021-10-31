@@ -256,8 +256,10 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.getLogger().info("Note: This might take a few minutes on first run.");
 
         try {
-            long time = new DependencyManager(this.getName(), this.getDataFolder().toPath())
-                    .build();
+            DependencyManager dm = new DependencyManager(this.getName(), this.getDataFolder().toPath());
+            dm.enableMirror();
+            long time = dm.build();
+
             this.getLogger().info(String.format("Loaded libraries in %sms.", time));
         } catch (ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException | IOException e) {
             this.getLogger().severe("Unable to load dependencies...");
