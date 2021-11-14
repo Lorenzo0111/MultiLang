@@ -55,6 +55,8 @@ public class InventoryAdapter extends BaseAdapter {
 
             // Edit packet
             this.handle(event.getPlayer(),component);
+
+            packet.getChatComponents().write(0,component);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error has occurred while handling packets", e);
         }

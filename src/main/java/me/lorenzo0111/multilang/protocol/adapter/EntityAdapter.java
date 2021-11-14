@@ -111,7 +111,10 @@ public class EntityAdapter implements Runnable {
         }
     }
 
-    public static EntityAdapter getInstance() {
-        return instance;
+
+    public static void runNow() {
+        if (instance != null) {
+            Bukkit.getScheduler().runTask(MultiLangPlugin.getInstance(), instance);
+        }
     }
 }

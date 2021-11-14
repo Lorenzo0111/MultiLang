@@ -53,5 +53,6 @@ public class ChatAdapter extends BaseAdapter {
         if (component == null) return;
 
         this.handle(player,component);
+        packet.getChatComponents().write(0, component);
     }
 }

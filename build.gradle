@@ -59,16 +59,16 @@ repositories {
 }
 
 dependencies {
-    implementation("space.rocketplugins.pluginslib:bukkit:2.0.3")
-    implementation("io.github.slimjar:slimjar:1.2.6")
+    implementation("space.rocketplugins.pluginslib:bukkit:2.0.3.2")
+    implementation("io.github.slimjar:slimjar:1.2.7")
     implementation("dev.triumphteam:triumph-gui:3.0.4")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.0")
     slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.4.0")
-    slim("net.kyori:adventure-api:4.9.2")
-    slim("net.kyori:adventure-text-serializer-legacy:4.9.2")
+    slim('net.kyori:adventure-api:4.9.3')
+    slim('net.kyori:adventure-text-serializer-legacy:4.9.3')
     slim("mysql:mysql-connector-java:8.0.27")
     slim("org.xerial:sqlite-jdbc:3.36.0.3")
     slim("org.slf4j:slf4j-simple:1.7.32")
