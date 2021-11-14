@@ -67,8 +67,6 @@ dependencies {
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.0")
     slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.4.0")
-    slim('net.kyori:adventure-api:4.9.3')
-    slim('net.kyori:adventure-text-serializer-legacy:4.9.3')
     slim("mysql:mysql-connector-java:8.0.27")
     slim("org.xerial:sqlite-jdbc:3.36.0.3")
     slim("org.slf4j:slf4j-simple:1.7.32")
@@ -86,8 +84,6 @@ slimJar {
     relocate('org.sqlite.native',"${libsBase}.jdbc.sqlite")
     relocate('com.cryptomorin.xseries',"${libsBase}.xseries")
     relocate('com.zaxxer.hikari',"${libsBase}.hikari")
-    relocate("net.kyori.adventure", "${libsBase}.adventure")
-    relocate("net.kyori.examination", "${libsBase}.examination")
 }
 
 shadowJar {
@@ -98,6 +94,13 @@ shadowJar {
     relocate("google","${libsBase}.google")
     relocate("org.sqlite.native","${libsBase}.jdbc.sqlite")
     relocate("com.cryptomorin.xseries","${libsBase}.xseries")
+    relocate("net.kyori.adventure", "${libsBase}.adventure")
+    relocate("net.kyori.examination", "${libsBase}.examination")
+    relocate("com.google.j2objc", "${libsBase}.google.j2objc")
+    relocate("com.google.common", "${libsBase}.google.common")
+    relocate("com.google.errorprone", "${libsBase}.google.errorprone")
+    relocate("org.yaml.snakeyaml", "${libsBase}.yaml")
+    relocate("org.spongepowered.configurate", "${libsBase}.configurate")
 }
 
 
