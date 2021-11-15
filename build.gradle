@@ -35,8 +35,6 @@ ext {
     libsBase = 'me.lorenzo0111.multilang.libs'
 }
 
-apply from: "https://cdn.rocketplugins.space/spigot"
-
 group = "me.lorenzo0111"
 version = "1.6.2"
 
@@ -47,7 +45,10 @@ java {
 
 repositories {
     mavenCentral()
+    maven { url "https://hub.spigotmc.org/nexus/content/repositories/snapshots/" }
+    maven { url "https://repo.extendedclip.com/content/repositories/placeholderapi/" }
     maven { url "https://jitpack.io" }
+    maven { url "https://repo.codemc.org/repository/maven-public" }
     maven { url "https://repo.codemc.org/repository/maven-snapshots/" }
     maven { url "https://repo.codemc.org/repository/maven-releases/" }
     maven { url "https://repo.repsy.io/mvn/lorenzo0111/public" }
@@ -59,12 +60,15 @@ repositories {
 }
 
 dependencies {
+    implementation("org.bstats:bstats-bukkit:2.2.1")
     implementation("space.rocketplugins.pluginslib:bukkit:2.0.3.2")
     implementation("io.github.slimjar:slimjar:1.2.7")
     implementation("dev.triumphteam:triumph-gui:3.0.4")
+    compileOnly("org.spigotmc:spigot-api:1.17-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.0")
+    compileOnly('org.jetbrains:annotations:22.0.0')
     slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.4.0")
     slim("mysql:mysql-connector-java:8.0.27")
@@ -101,6 +105,7 @@ shadowJar {
     relocate("com.google.errorprone", "${libsBase}.google.errorprone")
     relocate("org.yaml.snakeyaml", "${libsBase}.yaml")
     relocate("org.spongepowered.configurate", "${libsBase}.configurate")
+    relocate("org.bstats", "${libsBase}.bstats")
 }
 
 
@@ -127,6 +132,12 @@ processResources {
         duplicatesStrategy DuplicatesStrategy.INCLUDE
         filter ReplaceTokens, tokens: [version: version]
     }
+}
+
+java.sourceCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }
 
 tasks.build.dependsOn tasks.shadowJar
