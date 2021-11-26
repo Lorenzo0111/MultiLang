@@ -77,7 +77,7 @@ public final class DatabaseManager {
                 return new SQLiteConnection(plugin.getDataFolder().toPath());
             case MYSQL:
                 config.setPoolName("MultiLang MySQL Connection Pool");
-                config.setDataSourceClassName(driver.getName());
+                config.setDriverClassName(driver.getName());
                 config.addDataSourceProperty("serverName", plugin.getConfig("mysql.ip"));
                 config.addDataSourceProperty("port", plugin.getConfig("mysql.port"));
                 config.addDataSourceProperty("databaseName", plugin.getConfig("mysql.database"));
