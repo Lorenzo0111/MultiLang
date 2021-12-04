@@ -38,6 +38,7 @@ ext {
 
 group = "me.lorenzo0111"
 version = "1.6.3"
+description = "MultiLang is a library that allows you to easily create multi-language placeholders."
 
 java {
     withJavadocJar()
@@ -127,6 +128,16 @@ indra {
     mitLicense()
     publishReleasesTo("codeMc", "https://repo.codemc.io/repository/maven-releases/")
     publishSnapshotsTo("codeMc", "https://repo.codemc.io/repository/maven-snapshots/")
+
+    configurePublications {
+        pom {
+            developers {
+                developer {
+                    id.set("lorenzo0111")
+                }
+            }
+        }
+    }
 }
 
 indraSonatype {
