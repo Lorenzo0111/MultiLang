@@ -146,6 +146,7 @@ indraSonatype {
 }
 
 signing {
+    sign configurations.archives
     useGpgCmd()
 }
 
