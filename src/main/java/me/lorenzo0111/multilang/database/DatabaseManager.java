@@ -72,6 +72,8 @@ public final class DatabaseManager {
             return null;
         }
 
+        plugin.getLogger().info("Driver found: " + driver.getName());
+
         switch (plugin.getStorageType()) {
             case FILE:
                 return new SQLiteConnection(plugin.getDataFolder().toPath());

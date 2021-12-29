@@ -89,7 +89,6 @@ sonarqube {
 slimJar {
     relocate('dev.triumphteam',"${libsBase}")
     relocate('google',"${libsBase}.google")
-    relocate('org.sqlite.native',"${libsBase}.jdbc.sqlite")
     relocate('com.cryptomorin.xseries',"${libsBase}.xseries")
     relocate('com.zaxxer.hikari',"${libsBase}.hikari")
 }
@@ -100,7 +99,6 @@ shadowJar {
     relocate("io.github.slimjar","${libsBase}.slimjar")
     relocate("dev.triumphteam","${libsBase}")
     relocate("google","${libsBase}.google")
-    relocate("org.sqlite.native","${libsBase}.jdbc.sqlite")
     relocate("com.cryptomorin.xseries","${libsBase}.xseries")
     relocate("net.kyori.adventure", "${libsBase}.adventure")
     relocate("net.kyori.examination", "${libsBase}.examination")
