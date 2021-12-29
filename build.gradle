@@ -25,7 +25,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id "java"
-    id "com.github.johnrengelman.shadow" version "7.1.1"
+    id "com.github.johnrengelman.shadow" version "7.1.2"
     id "net.kyori.indra.publishing" version "2.0.6"
     id "net.kyori.indra.publishing.sonatype" version "2.0.6"
     id "signing"
