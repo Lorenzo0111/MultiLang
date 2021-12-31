@@ -31,6 +31,8 @@ import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import me.lorenzo0111.multilang.MultiLangPlugin;
+import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
+import me.lorenzo0111.multilang.realtime.TranslatorConfig;
 import org.bukkit.entity.Player;
 
 public class ChatAdapter extends BaseAdapter {
@@ -45,14 +47,23 @@ public class ChatAdapter extends BaseAdapter {
         Player player = event.getPlayer();
 
         EnumWrappers.ChatType type = packet.getChatTypes().read(0);
-        // Check if the packet comes from a plugin, if not stop the action.
-        if (!type.equals(EnumWrappers.ChatType.SYSTEM)) return;
 
-        // Get the component
         WrappedChatComponent component = packet.getChatComponents().read(0);
         if (component == null) return;
 
-        this.handle(player,component);
+        if (type.equals(EnumWrappers.ChatType.SYSTEM)) {
+            this.handle(player,component);
+        }
+
+        TranslatorConfig translators = ((MultiLangPlugin) this.getPlugin()).getTranslators();
+        if (translators.isEnabled()) {
+            LocalizedPlayer p = LocalizedPlayer.from(player);
+            this.updateTexts(component, (value) -> {
+                String text = translators.translate(p.getLocale(), value);
+                return text != null ? text : value;
+            });
+        }
+
         packet.getChatComponents().write(0, component);
     }
 }

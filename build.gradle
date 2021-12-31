@@ -38,7 +38,7 @@ ext {
 }
 
 group = "me.lorenzo0111"
-version = "1.6.4"
+version = "1.6.5-SNAPSHOT"
 description = "MultiLang is a library that allows you to easily create multi-language placeholders."
 
 java {
@@ -67,6 +67,7 @@ dependencies {
     implementation("space.rocketplugins.pluginslib:bukkit:2.0.3.2")
     implementation("io.github.slimjar:slimjar:1.2.7")
     implementation("dev.triumphteam:triumph-gui:3.0.5")
+    implementation files("libs/GoogleTranslateAPI-1.0-shaded.jar")
     compileOnly("org.spigotmc:spigot-api:1.18.1-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
@@ -88,7 +89,6 @@ sonarqube {
 
 slimJar {
     relocate('dev.triumphteam',"${libsBase}")
-    relocate('google',"${libsBase}.google")
     relocate('com.cryptomorin.xseries',"${libsBase}.xseries")
     relocate('com.zaxxer.hikari',"${libsBase}.hikari")
 }
@@ -98,7 +98,6 @@ shadowJar {
     archiveFileName.set("${project.name}-${project.version}.jar")
     relocate("io.github.slimjar","${libsBase}.slimjar")
     relocate("dev.triumphteam","${libsBase}")
-    relocate("google","${libsBase}.google")
     relocate("com.cryptomorin.xseries","${libsBase}.xseries")
     relocate("net.kyori.adventure", "${libsBase}.adventure")
     relocate("net.kyori.examination", "${libsBase}.examination")
@@ -108,6 +107,8 @@ shadowJar {
     relocate("org.yaml.snakeyaml", "${libsBase}.yaml")
     relocate("org.spongepowered.configurate", "${libsBase}.configurate")
     relocate("org.bstats", "${libsBase}.bstats")
+    relocate("com.google.gson", "${libsBase}.google.gson")
+    relocate("com.gtranslate", "${libsBase}.google.translate")
 }
 
 

@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 
 public final class RegexChecker {
     private static final Pattern PATTERN = Pattern.compile("<lang>([a-zA-Z0-9]+)<\\/lang>");
+    private static final Pattern URL_PATTERN = Pattern.compile("[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)");
 
     private RegexChecker() {}
 
@@ -62,5 +63,9 @@ public final class RegexChecker {
         }
 
         return matcher.appendTail(buffer).toString();
+    }
+
+    public static boolean isUrl(String string) {
+        return URL_PATTERN.matcher(string).matches();
     }
 }

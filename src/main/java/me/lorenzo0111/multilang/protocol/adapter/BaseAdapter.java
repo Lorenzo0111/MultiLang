@@ -19,10 +19,14 @@ public abstract class BaseAdapter extends PacketAdapter {
     }
 
     public void handle(Player player, @NotNull WrappedChatComponent component) {
+        this.updateTexts(component,(value) -> RegexChecker.replace(player,value));
+    }
+
+    public void updateTexts(@NotNull WrappedChatComponent component, StringEditor action) {
         JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
 
         if (json.has("text")) {
-            this.update(json, RegexChecker.replace(player, json));
+            this.update(json,action.edit(json.get("text").getAsString()));
         }
 
         // Iterate "extra", check if it has some text and update it
@@ -32,7 +36,7 @@ public abstract class BaseAdapter extends PacketAdapter {
                 JsonObject object = element.getAsJsonObject();
                 if (!object.has("text")) continue;
 
-                this.update(object, RegexChecker.replace(player,object));
+                this.update(object,action.edit(object.get("text").getAsString()));
             }
 
         }
@@ -45,4 +49,7 @@ public abstract class BaseAdapter extends PacketAdapter {
         object.addProperty("text",value);
     }
 
+    public interface StringEditor {
+        String edit(String text);
+    }
 }

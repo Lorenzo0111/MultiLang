@@ -21,10 +21,17 @@ default: "english"
 
 default-base: "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTI4OWQ1YjE3ODYyNmVhMjNkMGIwYzNkMmRmNWMwODVlODM3NTA1NmJmNjg1YjVlZDViYjQ3N2ZlODQ3MmQ5NCJ9fX0="
 
-# You can view a documentation for the autodetector here: https://docs.rocketplugins.space/multilang/configuration#how-does-the-autodetect-work
+# You can view a documentation for the autodetector here: https://wiki.lorenzo0111.me/multilang/configuration#how-does-the-autodetect-work
 languages:
   english: "en_us"
   italiano: "it_it"
+
+# RealTime is a feature that allows you to automatically translate chat message to the player message with a configurable translator api
+real-time:
+  enabled: false # Set to true to enable the feature
+  cache: true # Cache the translated messages in the database(for 24 hours from the last access) for faster translations
+  api: "google" # Available translation apis: google. You can register a new one with our api.
+  key: "" # The api key for the selected api. Needed for Google. If you need help creating a key for free join our discord server https://discord.io/RocketPlugins
 
 # Warning: This feature is still experimental. It may not work with some languages.
 auto-detect: false

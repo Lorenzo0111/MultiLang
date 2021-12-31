@@ -26,6 +26,7 @@ package me.lorenzo0111.multilang.api.impl;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.IMultiLangAPI;
+import me.lorenzo0111.multilang.api.objects.ITranslator;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.api.objects.LocalizedString;
@@ -88,6 +89,21 @@ public class MultiLangAPI implements IMultiLangAPI {
         return string.
                 map(str -> str.getLocales().getOrDefault(locale,str.getDefaultString()))
                 .orElse(null);
+    }
+
+    @Override
+    public @Nullable String realTimeLocalize(Locale locale, String text) {
+        return plugin.getTranslators().translate(locale,text);
+    }
+
+    @Override
+    public void registerTranslator(String id, ITranslator translator) throws ApiException {
+        plugin.getTranslators().registerTranslator(id,translator);
+    }
+
+    @Override
+    public void setTranslator(String id) throws ApiException{
+        plugin.getTranslators().setInUse(id);
     }
 
 }

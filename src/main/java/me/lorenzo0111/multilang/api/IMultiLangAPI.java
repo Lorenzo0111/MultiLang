@@ -24,6 +24,7 @@
 
 package me.lorenzo0111.multilang.api;
 
+import me.lorenzo0111.multilang.api.objects.ITranslator;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.api.objects.LocalizedString;
@@ -69,4 +70,26 @@ public interface IMultiLangAPI {
      * @return A localized string
      */
     @Nullable String localize(Locale locale, String key);
+
+    /**
+     * Translate a text with the RealTime translator
+     * @param locale the locale to translate to
+     * @param text the text to translate
+     * @return the translated text or null if an error occurred
+     */
+    @Nullable String realTimeLocalize(Locale locale, String text);
+
+    /**
+     * @param id The id to use in the configuration file
+     * @param translator The translator interface
+     * @throws ApiException caused if this method is called after the translator is registered
+     */
+    void registerTranslator(String id, ITranslator translator) throws ApiException;
+
+    /**
+     * Set the translator to use
+     * @param id the id of the translator
+     * @throws ApiException caused if the translator is not registered
+     */
+    void setTranslator(String id) throws ApiException;
 }

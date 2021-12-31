@@ -48,6 +48,10 @@ public class Locale {
         return locale;
     }
 
+    public String getLocaleID() {
+        return locale.split("_")[0];
+    }
+
     @Override
     public String toString() {
         return name;
