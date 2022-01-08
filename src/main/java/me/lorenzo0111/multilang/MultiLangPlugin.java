@@ -37,6 +37,7 @@ import me.lorenzo0111.multilang.hooks.Hook;
 import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.protocol.PacketHandler;
 import me.lorenzo0111.multilang.realtime.GoogleTranslator;
+import me.lorenzo0111.multilang.realtime.MicrosoftTranslator;
 import me.lorenzo0111.multilang.realtime.TranslatorConfig;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
@@ -60,7 +61,10 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.logging.Level;
 
 public final class MultiLangPlugin extends JavaPlugin {
@@ -133,22 +137,15 @@ public final class MultiLangPlugin extends JavaPlugin {
             e.printStackTrace();
         }
 
-        translators = new TranslatorConfig(databaseManager);
-        translators.canRegister(true);
-        translators.registerTranslator("google", new GoogleTranslator());
-        translators.setEnabled(this.getConfig().getBoolean("real-time.enabled"));
-        translators.setInUse(this.getConfig().getString("real-time.api", "google"));
-        translators.setUseCache(this.getConfig().getBoolean("real-time.cache"));
-        if (!translators.testConnection()) {
-            this.getLogger().severe("RealTime API is not working. Please check your api url.");
-            this.getLogger().severe("Disabling real-time translation.");
-            translators.setEnabled(false);
+        this.reloadRealtimeConfig();
+        if (translators.isUseCache()) {
+            translators.loadCache(databaseManager);
         }
 
         this.cacheFolder = new File(this.getDataFolder(), "cache");
 
         if (!cacheFolder.exists() && !cacheFolder.mkdir()) {
-            this.getLogger().warning("Unable to create cache folder, dump file won't saved.");
+            this.getLogger().warning("Unable to create cache folder, dump file won't be saved.");
         }
     }
 
@@ -162,6 +159,8 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.getLogger().info("Closing database connection..");
 
         try {
+            this.getLogger().info("Saving data before closing connection..");
+            this.translators.saveCacheSync(databaseManager);
             if (this.getDatabaseManager().getConnectionHandler() != null)
                 this.getDatabaseManager().getConnectionHandler().close();
         } catch (SQLException e) {
@@ -256,7 +255,16 @@ public final class MultiLangPlugin extends JavaPlugin {
                                 new Column("locale", "TEXT")
                         ));
 
-        this.databaseManager = new DatabaseManager(this, Collections.singletonList(playersTable), connection);
+        Table cacheTable = new Table
+                (new BukkitScheduler(this),
+                        connection,
+                        "multilang_cache",
+                        Arrays.asList(
+                                new Column("text", "TEXT"),
+                                new Column("translations", "TEXT")
+                        ));
+
+        this.databaseManager = new DatabaseManager(this, Arrays.asList(playersTable, cacheTable), connection);
     }
 
     public StorageManager getStorage() {
@@ -342,6 +350,30 @@ public final class MultiLangPlugin extends JavaPlugin {
 
     public TranslatorConfig getTranslators() {
         return translators;
+    }
+
+    public PacketHandler getProtocol() {
+        return protocol;
+    }
+
+    public void reloadRealtimeConfig() {
+        if (translators != null && translators.isUseCache()) {
+            translators.saveCache(databaseManager);
+        }
+
+        translators = new TranslatorConfig();
+        translators.canRegister(true);
+        translators.registerTranslator("bing", new MicrosoftTranslator(this.getConfig().getString("real-time.key")));
+        translators.registerTranslator("google", new GoogleTranslator());
+        translators.setEnabled(this.getConfig().getBoolean("real-time.enabled"));
+        translators.setInUse(this.getConfig().getString("real-time.api", "google"));
+        translators.setUseCache(this.getConfig().getBoolean("real-time.cache"));
+        translators.setPatterns(this.getConfig().getStringList("real-time.ignore"));
+        if (!translators.testConnection()) {
+            this.getLogger().severe("RealTime API is not working. Please check your api url.");
+            this.getLogger().severe("Disabling real-time translation.");
+            translators.setEnabled(false);
+        }
     }
 
     public void setApi(@NotNull IMultiLangAPI api) {

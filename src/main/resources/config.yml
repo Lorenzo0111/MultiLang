@@ -30,8 +30,10 @@ languages:
 real-time:
   enabled: false # Set to true to enable the feature
   cache: true # Cache the translated messages in the database(for 24 hours from the last access) for faster translations
-  api: "google" # Available translation apis: google. You can register a new one with our api.
-  key: "" # The api key for the selected api. Needed for Google. If you need help creating a key for free join our discord server https://discord.io/RocketPlugins
+  api: "bing" # Available translation apis: bing, google. You can register a new one with our api.
+  key: "" # The api key for the selected api. Needed for Bing(By RapidAPI). If you need help creating a key for free join our discord server https://discord.io/RocketPlugins
+  ignore: # List of regex to not translate
+    - "ignoreme"
 
 # Warning: This feature is still experimental. It may not work with some languages.
 auto-detect: false

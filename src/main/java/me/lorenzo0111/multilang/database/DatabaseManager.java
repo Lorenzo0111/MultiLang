@@ -24,26 +24,28 @@
 
 package me.lorenzo0111.multilang.database;
 
+import com.google.gson.Gson;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
+import me.lorenzo0111.multilang.api.objects.LocalizedString;
 import me.lorenzo0111.multilang.exceptions.DriverException;
+import me.lorenzo0111.pluginslib.database.DatabaseSerializable;
 import me.lorenzo0111.pluginslib.database.connection.HikariConnection;
 import me.lorenzo0111.pluginslib.database.connection.IConnectionHandler;
 import me.lorenzo0111.pluginslib.database.connection.SQLiteConnection;
 import me.lorenzo0111.pluginslib.database.objects.Table;
+import me.lorenzo0111.pluginslib.database.query.Queries;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.sql.*;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
@@ -52,9 +54,10 @@ public final class DatabaseManager {
     private final MultiLangPlugin plugin;
     private final Table usersTable;
     private final IConnectionHandler connectionHandler;
+    private final Gson gson = new Gson();
 
     @Nullable
-    public static IConnectionHandler createConnection(MultiLangPlugin plugin) throws SQLException, IOException {
+    public static IConnectionHandler createConnection(@NotNull MultiLangPlugin plugin) throws SQLException, IOException {
         HikariConfig config = new HikariConfig();
 
         config.setMaximumPoolSize(10);
@@ -139,7 +142,7 @@ public final class DatabaseManager {
         return future;
     }
 
-    public void updateTable(String table, Collection<LocalizedPlayer> items) {
+    public void updateTable(String table, Collection<DatabaseSerializable> items) {
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -155,6 +158,81 @@ public final class DatabaseManager {
 
             }
         }.runTaskAsynchronously(plugin);
+    }
+
+    public void updateCacheTable(String table, Map<String, LocalizedString> data) {
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                updateCacheTableSync(table,data);
+            }
+        }.runTaskAsynchronously(plugin);
+    }
+
+
+    public void updateCacheTableSync(String table, Map<String, LocalizedString> data) {
+        final Optional<Table> first = tables.stream().filter((tableItem) -> tableItem.getName().equals(table)).findFirst();
+        if (!first.isPresent()) {
+            return;
+        }
+
+        try {
+            final Table tableItem = first.get();
+
+            Statement statement = tableItem.getConnection().createStatement();
+            statement.executeUpdate(Queries.builder().query(Queries.CLEAR).table(tableItem.getName()).build());
+            statement.close();
+
+            String query = Queries.builder()
+                    .query(Queries.INSERT_START)
+                    .table(tableItem.getName())
+                    .build() + "`text`, `translations`) VALUES(?,?);";
+
+            PreparedStatement preparedStatement = tableItem.getConnection().prepareStatement(query);
+            for (Map.Entry<String, LocalizedString> entry : data.entrySet()) {
+                preparedStatement.setString(1, entry.getKey());
+                preparedStatement.setString(2, gson.toJson(entry.getValue()));
+                preparedStatement.executeUpdate();
+            }
+
+            preparedStatement.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public @NotNull CompletableFuture<Map<String,LocalizedString>> getCache(String table) {
+        CompletableFuture<Map<String,LocalizedString>> future = new CompletableFuture<>();
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+
+                final Optional<Table> first = tables.stream().filter((tableItem) -> tableItem.getName().equals(table)).findFirst();
+                if (!first.isPresent()) {
+                    future.completeExceptionally(new NullPointerException("Table not found"));
+                    return;
+                }
+
+                try {
+                    final Table tableItem = first.get();
+
+                    ResultSet result = tableItem.all().join();
+
+                    Map<String,LocalizedString> data = new HashMap<>();
+                    while (result.next()) {
+                        data.put(result.getString("text"), gson.fromJson(result.getString("translations"), LocalizedString.class));
+                    }
+
+                    result.close();
+                    future.complete(data);
+                } catch (SQLException e) {
+                    future.completeExceptionally(e);
+                }
+            }
+        }.runTaskAsynchronously(plugin);
+
+        return future;
     }
 
     @Nullable

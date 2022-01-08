@@ -67,4 +67,13 @@ public class LocalizedString {
     public int hashCode() {
         return Objects.hash(key);
     }
+
+    @Override
+    public String toString() {
+        return "LocalizedString{" +
+                "key='" + key + '\'' +
+                ", defaultString='" + defaultString + '\'' +
+                ", locales=" + locales +
+                '}';
+    }
 }

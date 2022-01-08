@@ -63,6 +63,7 @@ public class ReloadCommand extends SubCommand {
             plugin.getConfigManager().register();
             plugin.getLoader().reloadGui();
             plugin.getLoader().reloadMessages();
+            plugin.reloadRealtimeConfig();
             EntityAdapter.runNow();
 
             if (commandSender instanceof Player) {

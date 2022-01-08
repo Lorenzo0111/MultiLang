@@ -28,8 +28,10 @@ import com.google.gson.JsonObject;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -67,5 +69,15 @@ public final class RegexChecker {
 
     public static boolean isUrl(String string) {
         return URL_PATTERN.matcher(string).matches();
+    }
+
+    @Contract(pure = true)
+    public static boolean contains(@NotNull String string, @NotNull List<Pattern> patterns) {
+        for (Pattern pattern : patterns) {
+            if (pattern.matcher(string).find()) {
+                return true;
+            }
+        }
+        return false;
     }
 }
