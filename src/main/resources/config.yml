@@ -26,10 +26,10 @@ languages:
   english: "en_us"
   italiano: "it_it"
 
-# RealTime is a feature that allows you to automatically translate chat message to the player message with a configurable translator api
+# RealTime is a feature that allows you to automatically translate chat message to the player language with a configurable translator api
 real-time:
   enabled: false # Set to true to enable the feature
-  cache: true # Cache the translated messages in the database(for 24 hours from the last access) for faster translations
+  cache: true # Cache the translated messages in the database for faster translations
   api: "bing" # Available translation apis: bing, google. You can register a new one with our api.
   key: "" # The api key for the selected api. Needed for Bing(By RapidAPI). If you need help creating a key for free join our discord server https://discord.io/RocketPlugins
   ignore: # List of regex to not translate
@@ -38,6 +38,7 @@ real-time:
 # Warning: This feature is still experimental. It may not work with some languages.
 auto-detect: false
 
+# This section is for placeholders
 strings:
   1:
     identifier: "example"
