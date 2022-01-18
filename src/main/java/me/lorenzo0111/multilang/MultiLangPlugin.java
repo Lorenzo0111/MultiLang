@@ -53,6 +53,7 @@ import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -153,19 +154,25 @@ public final class MultiLangPlugin extends JavaPlugin {
     public void onDisable() {
         BukkitAudienceManager.shutdown();
         this.configManager.unregisterAll();
-        Bukkit.getScheduler().cancelTasks(this);
         if (protocol != null)
             protocol.unload();
         this.getLogger().info("Closing database connection..");
 
         try {
+            this.getLogger().info("Waiting for other tasks to finish..");
+            for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
+                activeWorker.getThread().join();
+            }
+
             this.getLogger().info("Saving data before closing connection..");
             this.translators.saveCacheSync(databaseManager);
             if (this.getDatabaseManager().getConnectionHandler() != null)
                 this.getDatabaseManager().getConnectionHandler().close();
-        } catch (SQLException e) {
-            e.printStackTrace();
+        } catch (SQLException | InterruptedException e) {
+            this.getLogger().log(Level.WARNING, "An error has occurred while closing tasks. Bad things may happen.", e);
         }
+
+        Bukkit.getScheduler().cancelTasks(this);
 
         this.getLogger().info("Cleaning cache..");
 
