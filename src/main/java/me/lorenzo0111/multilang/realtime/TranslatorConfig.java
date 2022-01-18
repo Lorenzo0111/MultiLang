@@ -11,6 +11,7 @@ import org.bukkit.ChatColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,12 +20,12 @@ import java.util.regex.Pattern;
 
 public class TranslatorConfig {
     private final Map<String, ITranslator> translators = new HashMap<>();
+    private final List<Pattern> patterns = new ArrayList<>();
     private Map<String, LocalizedString> cache = new HashMap<>();
     private boolean isEnabled = false;
     private boolean canRegister = false;
     private boolean useCache = false;
     private String inUse = null;
-    private List<Pattern> patterns;
 
     public void registerTranslator(String id, ITranslator translator) {
         if (!this.canRegister) {
