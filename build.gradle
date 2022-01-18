@@ -75,10 +75,10 @@ dependencies {
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.1")
     compileOnly('org.jetbrains:annotations:23.0.0')
     slim("com.zaxxer:HikariCP:4.0.3")
-    slim("com.github.cryptomorin:XSeries:8.6.0")
+    slim("com.github.cryptomorin:XSeries:8.6.0.0.1")
     slim("mysql:mysql-connector-java:8.0.27")
     slim("org.xerial:sqlite-jdbc:3.36.0.3")
-    slim("org.slf4j:slf4j-simple:1.7.32")
+    slim("org.slf4j:slf4j-simple:1.7.33")
 }
 
 sonarqube {
