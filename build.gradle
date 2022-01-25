@@ -78,7 +78,7 @@ dependencies {
     slim("com.github.cryptomorin:XSeries:8.6.0.0.1")
     slim("mysql:mysql-connector-java:8.0.27")
     slim("org.xerial:sqlite-jdbc:3.36.0.3")
-    slim("org.slf4j:slf4j-simple:1.7.33")
+    slim("org.slf4j:slf4j-simple:1.7.35")
 }
 
 sonarqube {
