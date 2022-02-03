@@ -32,6 +32,7 @@ import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
+import me.lorenzo0111.multilang.utils.RegexChecker;
 
 import java.util.logging.Level;
 
@@ -55,6 +56,13 @@ public class InventoryAdapter extends BaseAdapter {
 
             // Edit packet
             this.handle(event.getPlayer(),component);
+
+            packet.getChatComponents().write(0,component);
+        } catch (IllegalStateException e) {
+            PacketContainer packet = event.getPacket();
+
+            WrappedChatComponent component = packet.getChatComponents().read(0);
+            component.setJson(RegexChecker.replace(event.getPlayer(),component.getJson()));
 
             packet.getChatComponents().write(0,component);
         } catch (Exception e) {
