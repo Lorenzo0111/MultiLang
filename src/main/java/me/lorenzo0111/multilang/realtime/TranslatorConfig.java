@@ -128,7 +128,7 @@ public class TranslatorConfig {
     }
 
     public void loadCache(@NotNull DatabaseManager database) {
-        database.getCache("multilang_cache").whenComplete((data, throwable) -> {
+        database.getCache().whenComplete((data, throwable) -> {
             if (throwable != null || data == null) {
                 MultiLangPlugin.getInstance().getLogger().log(Level.WARNING, "Failed to load cache", throwable);
                 return;
@@ -139,12 +139,14 @@ public class TranslatorConfig {
     }
 
     public void saveCache(@NotNull DatabaseManager database) {
-        database.updateCacheTable("multilang_cache", cache);
+        database.updateCacheTable(cache);
     }
 
     public void saveCacheSync(@NotNull DatabaseManager database) {
-        database.updateCacheTableSync("multilang_cache", cache);
+        database.updateCacheTableSync(cache);
     }
 
-
+    public void clearCache(@NotNull DatabaseManager database) {
+        database.getCacheTable().clear();
+    }
 }

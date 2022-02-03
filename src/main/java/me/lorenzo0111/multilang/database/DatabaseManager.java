@@ -32,7 +32,6 @@ import me.lorenzo0111.multilang.api.objects.Locale;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.api.objects.LocalizedString;
 import me.lorenzo0111.multilang.exceptions.DriverException;
-import me.lorenzo0111.pluginslib.database.DatabaseSerializable;
 import me.lorenzo0111.pluginslib.database.connection.HikariConnection;
 import me.lorenzo0111.pluginslib.database.connection.IConnectionHandler;
 import me.lorenzo0111.pluginslib.database.connection.SQLiteConnection;
@@ -45,14 +44,15 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.IOException;
 import java.sql.*;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 import java.util.logging.Level;
 
 public final class DatabaseManager {
-    private final List<Table> tables;
     private final MultiLangPlugin plugin;
     private final Table usersTable;
+    private final Table cacheTable;
     private final IConnectionHandler connectionHandler;
     private final Gson gson = new Gson();
 
@@ -100,22 +100,19 @@ public final class DatabaseManager {
         }
     }
 
-    public DatabaseManager(MultiLangPlugin plugin, List<Table> tables) throws SQLException, IOException {
-        this(plugin,tables,createConnection(plugin));
+    public DatabaseManager(MultiLangPlugin plugin, Table usersTable, Table cacheTable) throws SQLException, IOException {
+        this(plugin,usersTable,cacheTable,createConnection(plugin));
     }
 
-    public DatabaseManager(MultiLangPlugin plugin, List<Table> tables, IConnectionHandler connection) {
+    public DatabaseManager(MultiLangPlugin plugin, Table usersTable, Table cacheTable, IConnectionHandler connection) {
         this.plugin = plugin;
-        this.tables = tables;
+        this.usersTable = usersTable;
+        this.cacheTable = cacheTable;
 
         this.connectionHandler = connection;
 
-        tables.forEach(Table::create);
-
-        this.usersTable = tables.stream()
-                .filter((item) -> item.getName().equals("multilang_players"))
-                .findFirst()
-                .orElse(null);
+        this.usersTable.create();
+        this.cacheTable.create();
     }
 
     public void updateUser(LocalizedPlayer player) {
@@ -142,53 +139,27 @@ public final class DatabaseManager {
         return future;
     }
 
-    public void updateTable(String table, Collection<DatabaseSerializable> items) {
+    public void updateCacheTable(Map<String, LocalizedString> data) {
         new BukkitRunnable() {
             @Override
             public void run() {
-
-                final Optional<Table> first = tables.stream().filter((tableItem) -> tableItem.getName().equals(table)).findFirst();
-                if (!first.isPresent()) {
-                    return;
-                }
-
-                final Table tableItem = first.get();
-                tableItem.clear();
-                items.forEach(tableItem::add);
-
+                updateCacheTableSync(data);
             }
         }.runTaskAsynchronously(plugin);
     }
 
-    public void updateCacheTable(String table, Map<String, LocalizedString> data) {
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                updateCacheTableSync(table,data);
-            }
-        }.runTaskAsynchronously(plugin);
-    }
-
-
-    public void updateCacheTableSync(String table, Map<String, LocalizedString> data) {
-        final Optional<Table> first = tables.stream().filter((tableItem) -> tableItem.getName().equals(table)).findFirst();
-        if (!first.isPresent()) {
-            return;
-        }
-
+    public void updateCacheTableSync(Map<String, LocalizedString> data) {
         try {
-            final Table tableItem = first.get();
-
-            Statement statement = tableItem.getConnection().createStatement();
-            statement.executeUpdate(Queries.builder().query(Queries.CLEAR).table(tableItem.getName()).build());
+            Statement statement = cacheTable.getConnection().createStatement();
+            statement.executeUpdate(Queries.builder().query(Queries.CLEAR).table(cacheTable.getName()).build());
             statement.close();
 
             String query = Queries.builder()
                     .query(Queries.INSERT_START)
-                    .table(tableItem.getName())
+                    .table(cacheTable.getName())
                     .build() + "`text`, `translations`) VALUES(?,?);";
 
-            PreparedStatement preparedStatement = tableItem.getConnection().prepareStatement(query);
+            PreparedStatement preparedStatement = cacheTable.getConnection().prepareStatement(query);
             for (Map.Entry<String, LocalizedString> entry : data.entrySet()) {
                 preparedStatement.setString(1, entry.getKey());
                 preparedStatement.setString(2, gson.toJson(entry.getValue()));
@@ -201,23 +172,14 @@ public final class DatabaseManager {
         }
     }
 
-    public @NotNull CompletableFuture<Map<String,LocalizedString>> getCache(String table) {
+    public @NotNull CompletableFuture<Map<String,LocalizedString>> getCache() {
         CompletableFuture<Map<String,LocalizedString>> future = new CompletableFuture<>();
 
         new BukkitRunnable() {
             @Override
             public void run() {
-
-                final Optional<Table> first = tables.stream().filter((tableItem) -> tableItem.getName().equals(table)).findFirst();
-                if (!first.isPresent()) {
-                    future.completeExceptionally(new NullPointerException("Table not found"));
-                    return;
-                }
-
                 try {
-                    final Table tableItem = first.get();
-
-                    ResultSet result = tableItem.all().join();
+                    ResultSet result = cacheTable.all().join();
 
                     Map<String,LocalizedString> data = new HashMap<>();
                     while (result.next()) {
@@ -247,5 +209,9 @@ public final class DatabaseManager {
 
     public Table getUsersTable() {
         return usersTable;
+    }
+
+    public Table getCacheTable() {
+        return cacheTable;
     }
 }

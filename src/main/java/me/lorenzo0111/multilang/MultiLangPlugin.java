@@ -48,6 +48,7 @@ import me.lorenzo0111.pluginslib.database.objects.Column;
 import me.lorenzo0111.pluginslib.database.objects.Table;
 import me.lorenzo0111.pluginslib.dependency.DependencyManager;
 import me.lorenzo0111.pluginslib.scheduler.BukkitScheduler;
+import me.lorenzo0111.pluginslib.scheduler.IScheduler;
 import me.lorenzo0111.pluginslib.updater.UpdateChecker;
 import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
@@ -253,9 +254,10 @@ public final class MultiLangPlugin extends JavaPlugin {
         final IConnectionHandler connection = DatabaseManager.createConnection(this);
         if (connection == null) throw new ReloadException("Connection cannot be null");
 
+        IScheduler scheduler = new BukkitScheduler(this);
+
         Table playersTable = new Table
-                (new BukkitScheduler(this),
-                        connection,
+                (scheduler, connection,
                         "multilang_players",
                         Arrays.asList(
                                 new Column("uuid", "TEXT"),
@@ -263,15 +265,14 @@ public final class MultiLangPlugin extends JavaPlugin {
                         ));
 
         Table cacheTable = new Table
-                (new BukkitScheduler(this),
-                        connection,
+                (scheduler, connection,
                         "multilang_cache",
                         Arrays.asList(
                                 new Column("text", "TEXT"),
                                 new Column("translations", "TEXT")
                         ));
 
-        this.databaseManager = new DatabaseManager(this, Arrays.asList(playersTable, cacheTable), connection);
+        this.databaseManager = new DatabaseManager(this, playersTable, cacheTable, connection);
     }
 
     public StorageManager getStorage() {
