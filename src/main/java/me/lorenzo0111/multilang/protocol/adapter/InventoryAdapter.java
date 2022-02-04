@@ -46,24 +46,17 @@ public class InventoryAdapter extends BaseAdapter {
 
     @Override
     public void onPacketSending(PacketEvent event) {
+        PacketContainer packet = event.getPacket();
+        WrappedChatComponent component = packet.getChatComponents().read(0);
+
         try {
-            // Get all objects
-            PacketContainer packet = event.getPacket();
-            WrappedChatComponent component = packet.getChatComponents().read(0);
             JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
-
             if (!json.has("text")) return;
-
-            // Edit packet
             this.handle(event.getPlayer(),component);
 
             packet.getChatComponents().write(0,component);
         } catch (IllegalStateException e) {
-            PacketContainer packet = event.getPacket();
-
-            WrappedChatComponent component = packet.getChatComponents().read(0);
             component.setJson(RegexChecker.replace(event.getPlayer(),component.getJson()));
-
             packet.getChatComponents().write(0,component);
         } catch (Exception e) {
             plugin.getLogger().log(Level.SEVERE, "An error has occurred while handling packets", e);

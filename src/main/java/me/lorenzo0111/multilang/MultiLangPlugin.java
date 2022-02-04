@@ -40,6 +40,7 @@ import me.lorenzo0111.multilang.realtime.GoogleTranslator;
 import me.lorenzo0111.multilang.realtime.MicrosoftTranslator;
 import me.lorenzo0111.multilang.realtime.TranslatorConfig;
 import me.lorenzo0111.multilang.storage.StorageManager;
+import me.lorenzo0111.multilang.tasks.RealtimeThread;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
 import me.lorenzo0111.pluginslib.audience.BukkitAudienceManager;
@@ -120,7 +121,7 @@ public final class MultiLangPlugin extends JavaPlugin {
                 60 * 20L,120 * 20L);
 
         if (Bukkit.getPluginManager().isPluginEnabled("ProtocolLib")) {
-            this.getLogger().info("Hooked with ProtocolLib. Now updating inventories.");
+            this.getLogger().info("Hooked with ProtocolLib. Now updating packets.");
             protocol = new PacketHandler(ProtocolLibrary.getProtocolManager(),this);
             protocol.init();
         }
@@ -161,6 +162,10 @@ public final class MultiLangPlugin extends JavaPlugin {
 
         try {
             this.getLogger().info("Waiting for other tasks to finish..");
+            RealtimeThread thread = RealtimeThread.getInstance();
+            if (thread != null) {
+                thread.end();
+            }
             for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
                 activeWorker.getThread().join();
             }
