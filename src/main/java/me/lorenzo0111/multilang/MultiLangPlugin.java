@@ -40,7 +40,6 @@ import me.lorenzo0111.multilang.realtime.GoogleTranslator;
 import me.lorenzo0111.multilang.realtime.MicrosoftTranslator;
 import me.lorenzo0111.multilang.realtime.TranslatorConfig;
 import me.lorenzo0111.multilang.storage.StorageManager;
-import me.lorenzo0111.multilang.tasks.RealtimeThread;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
 import me.lorenzo0111.multilang.utils.PluginLoader;
 import me.lorenzo0111.pluginslib.audience.BukkitAudienceManager;
@@ -162,10 +161,6 @@ public final class MultiLangPlugin extends JavaPlugin {
 
         try {
             this.getLogger().info("Waiting for other tasks to finish..");
-            RealtimeThread thread = RealtimeThread.getInstance();
-            if (thread != null) {
-                thread.end();
-            }
             for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
                 activeWorker.getThread().join();
             }

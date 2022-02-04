@@ -37,23 +37,20 @@ import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.LocalizedPlayer;
 import me.lorenzo0111.multilang.realtime.TranslatorConfig;
-import me.lorenzo0111.multilang.tasks.RealtimeThread;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
-    private final RealtimeThread thread;
-    private final Queue<Runnable> queue = new LinkedList<>();
+    private static final List<BukkitRunnable> TASKS = new ArrayList<>();
 
     public ChatAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority) {
         super(plugin, listenerPriority, PacketType.Play.Server.CHAT);
-
-        this.thread = new RealtimeThread(this);
     }
 
     @Override
@@ -114,35 +111,36 @@ public class ChatAdapter extends BaseAdapter {
 
 
     public void queue(LocalizedPlayer p, PacketContainer packet) {
-        Runnable task = () -> {
-            WrappedChatComponent component = packet.getChatComponents().read(0);
+        BukkitRunnable task = new BukkitRunnable() {
+            @Override
+            public void run() {
+                WrappedChatComponent component = packet.getChatComponents().read(0);
 
-            TranslatorConfig translators = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getTranslators();
+                TranslatorConfig translators = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getTranslators();
 
-            ChatAdapter.this.updateTexts(component, (value) -> {
-                String text = translators.translate(p.getLocale(), value);
-                return text != null ? text : value;
-            });
+                ChatAdapter.this.updateTexts(component, (value) -> {
+                    String text = translators.translate(p.getLocale(), value);
+                    return text != null ? text : value;
+                });
 
-            packet.getChatComponents().write(0, component);
-            Bukkit.getScheduler().runTask(ChatAdapter.this.getPlugin(), () -> {
-                try {
-                    ProtocolManager manager = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getProtocol().getManager();
+                packet.getChatComponents().write(0, component);
+                Bukkit.getScheduler().runTask(ChatAdapter.this.getPlugin(), () -> {
+                    try {
+                        ProtocolManager manager = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getProtocol().getManager();
 
-                    manager.sendServerPacket(p.getPlayer(), packet);
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-            });
+                        manager.sendServerPacket(p.getPlayer(), packet);
+                    } catch (InvocationTargetException e) {
+                        e.printStackTrace();
+                    }
+                });
+                TASKS.remove(this);
+            }
         };
-        queue.add(task);
+        task.runTaskAsynchronously(plugin);
+        TASKS.add(task);
     }
 
-    public RealtimeThread getThread() {
-        return thread;
-    }
-
-    public Queue<Runnable> getQueue() {
-        return queue;
+    public static List<BukkitRunnable> getTasks() {
+        return TASKS;
     }
 }

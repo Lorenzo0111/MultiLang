@@ -26,6 +26,7 @@ package me.lorenzo0111.multilang.debug;
 
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.subcommands.admin.DebugCommand;
+import me.lorenzo0111.multilang.protocol.adapter.ChatAdapter;
 import me.lorenzo0111.pluginslib.debugger.Debuggable;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -53,6 +54,7 @@ public class DebugUtils implements Debuggable {
             e.printStackTrace();
         }
         map.put("cache",directory);
+        map.put("realtime", ChatAdapter.getTasks().size());
         return map;
     }
 
