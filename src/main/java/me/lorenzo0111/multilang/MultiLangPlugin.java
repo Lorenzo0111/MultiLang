@@ -160,16 +160,11 @@ public final class MultiLangPlugin extends JavaPlugin {
         this.getLogger().info("Closing database connection..");
 
         try {
-            this.getLogger().info("Waiting for other tasks to finish..");
-            for (BukkitWorker activeWorker : Bukkit.getScheduler().getActiveWorkers()) {
-                activeWorker.getThread().join();
-            }
-
             this.getLogger().info("Saving data before closing connection..");
             this.translators.saveCacheSync(databaseManager);
             if (this.getDatabaseManager().getConnectionHandler() != null)
                 this.getDatabaseManager().getConnectionHandler().close();
-        } catch (SQLException | InterruptedException e) {
+        } catch (SQLException e) {
             this.getLogger().log(Level.WARNING, "An error has occurred while closing tasks. Bad things may happen.", e);
         }
 
