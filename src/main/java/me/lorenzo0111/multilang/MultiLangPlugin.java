@@ -54,7 +54,6 @@ import me.lorenzo0111.rocketplaceholders.api.IRocketPlaceholdersAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitWorker;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -141,7 +140,7 @@ public final class MultiLangPlugin extends JavaPlugin {
 
         this.reloadRealtimeConfig();
         if (translators.isUseCache()) {
-            translators.loadCache(databaseManager);
+            Bukkit.getScheduler().scheduleSyncDelayedTask(this, () -> translators.loadCache(databaseManager), 60 * 20L);
         }
 
         this.cacheFolder = new File(this.getDataFolder(), "cache");

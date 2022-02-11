@@ -38,7 +38,7 @@ ext {
 }
 
 group = "me.lorenzo0111"
-version = "1.7"
+version = "1.7.1"
 description = "MultiLang is a library that allows you to easily create multi-language placeholders."
 
 java {
