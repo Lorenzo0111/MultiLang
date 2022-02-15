@@ -63,7 +63,7 @@ public class ChatAdapter extends BaseAdapter {
         WrappedChatComponent component = packet.getChatComponents().read(0);
         if (component == null) return;
 
-        if (type.equals(EnumWrappers.ChatType.SYSTEM)) {
+        if (type == null || type.equals(EnumWrappers.ChatType.SYSTEM)) {
             this.handle(player,component);
         }
 
