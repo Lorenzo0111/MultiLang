@@ -68,7 +68,7 @@ dependencies {
     implementation('dev.triumphteam:triumph-gui:3.2')
     implementation files("libs/GoogleTranslateAPI-1.0-shaded.jar")
     compileOnly("org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.7.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.1")
