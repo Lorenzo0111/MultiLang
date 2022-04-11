@@ -26,6 +26,7 @@ public class TranslatorConfig {
     private boolean canRegister = false;
     private boolean useCache = false;
     private String inUse = null;
+    private boolean translateServer = false;
 
     public void registerTranslator(String id, ITranslator translator) {
         if (!this.canRegister) {
@@ -68,6 +69,14 @@ public class TranslatorConfig {
         for (String pattern : patterns) {
             this.patterns.add(Pattern.compile(pattern));
         }
+    }
+
+    public void setTranslateServer(boolean translateServer) {
+        this.translateServer = translateServer;
+    }
+
+    public boolean isTranslateServer() {
+        return translateServer;
     }
 
     public @Nullable String translate(Locale locale, String text) {

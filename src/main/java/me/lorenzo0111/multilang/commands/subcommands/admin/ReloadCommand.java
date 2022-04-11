@@ -28,6 +28,7 @@ import com.cryptomorin.xseries.XSound;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.commands.AdminLangCommand;
 import me.lorenzo0111.multilang.commands.SubCommand;
+import me.lorenzo0111.multilang.exceptions.ApiException;
 import me.lorenzo0111.multilang.exceptions.ReloadException;
 import me.lorenzo0111.multilang.protocol.adapter.EntityAdapter;
 import org.bukkit.command.CommandSender;
@@ -73,7 +74,7 @@ public class ReloadCommand extends SubCommand {
 
 
             commandSender.sendMessage(this.format(String.format("&7Plugin reloaded in &9%sms", System.currentTimeMillis() - time)));
-        } catch (ReloadException | SQLException | IOException ex) {
+        } catch (ReloadException | SQLException | IOException | ApiException ex) {
             if (commandSender instanceof Player) {
                 XSound.play((Player) commandSender,"BLOCK_ANVIL_PLACE");
             }

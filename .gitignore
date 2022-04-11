@@ -126,5 +126,3 @@ run/
 ignore/
 
 null/
-
-!libs/GoogleTranslateAPI-1.0-shaded.jar

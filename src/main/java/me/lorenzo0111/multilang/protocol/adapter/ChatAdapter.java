@@ -48,6 +48,7 @@ import java.util.List;
 
 public class ChatAdapter extends BaseAdapter {
     private static final List<BukkitRunnable> TASKS = new ArrayList<>();
+    private final List<String> ignore = new ArrayList<>();
 
     public ChatAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority) {
         super(plugin, listenerPriority, PacketType.Play.Server.CHAT);
@@ -55,6 +56,7 @@ public class ChatAdapter extends BaseAdapter {
 
     @Override
     public void onPacketSending(@NotNull PacketEvent event) {
+        if (event.isCancelled()) return;
         PacketContainer packet = event.getPacket();
         Player player = event.getPlayer();
 
@@ -62,6 +64,11 @@ public class ChatAdapter extends BaseAdapter {
 
         WrappedChatComponent component = packet.getChatComponents().read(0);
         if (component == null) return;
+
+        if (ignore.contains(component.getJson())) {
+            ignore.remove(component.getJson());
+            return;
+        }
 
         if (type == null || type.equals(EnumWrappers.ChatType.SYSTEM)) {
             this.handle(player,component);
@@ -98,6 +105,8 @@ public class ChatAdapter extends BaseAdapter {
     }
 
     private boolean translate(PacketEvent event, PacketContainer packet, @NotNull TranslatorConfig translators, @NotNull LocalizedPlayer p, @NotNull JsonObject object) {
+        if (!translators.isTranslateServer() && event.isServerPacket()) return false;
+
         String text = translators.tryFromCache(p.getLocale(), object.get("text").getAsString());
         if (text != null) {
             this.update(object,text);
@@ -114,25 +123,31 @@ public class ChatAdapter extends BaseAdapter {
         BukkitRunnable task = new BukkitRunnable() {
             @Override
             public void run() {
-                WrappedChatComponent component = packet.getChatComponents().read(0);
+                try {
+                    WrappedChatComponent component = packet.getChatComponents().read(0);
 
-                TranslatorConfig translators = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getTranslators();
+                    TranslatorConfig translators = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getTranslators();
 
-                ChatAdapter.this.updateTexts(component, (value) -> {
-                    String text = translators.translate(p.getLocale(), value);
-                    return text != null ? text : value;
-                });
+                    ChatAdapter.this.updateTexts(component, (value) -> {
+                        String text = translators.translate(p.getLocale(), value);
+                        return text != null ? text : value;
+                    });
 
-                packet.getChatComponents().write(0, component);
-                Bukkit.getScheduler().runTask(ChatAdapter.this.getPlugin(), () -> {
-                    try {
-                        ProtocolManager manager = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getProtocol().getManager();
+                    packet.getChatComponents().write(0, component);
+                    Bukkit.getScheduler().runTask(ChatAdapter.this.getPlugin(), () -> {
+                        try {
+                            ignore.add(component.getJson());
 
-                        manager.sendServerPacket(p.getPlayer(), packet);
-                    } catch (InvocationTargetException e) {
-                        e.printStackTrace();
-                    }
-                });
+                            ProtocolManager manager = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getProtocol().getManager();
+                            manager.sendServerPacket(p.getPlayer(), packet);
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
                 TASKS.remove(this);
             }
         };

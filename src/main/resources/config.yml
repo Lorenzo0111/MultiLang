@@ -30,10 +30,11 @@ languages:
 real-time:
   enabled: false # Set to true to enable the feature
   cache: true # Cache the translated messages in the database for faster translations
-  api: "bing" # Available translation apis: bing, google. You can register a new one with our api.
-  key: "" # The api key for the selected api. Needed for Bing(By RapidAPI). If you need help creating a key for free join our discord server https://discord.io/RocketPlugins
+  key: "" # The api key for the api. You can create one at https://multilang.lorenzo0111.me
+  server-messages: false # Set to true if it should edit plugin messages
   ignore: # List of regex to not translate
     - "ignoreme"
+    - "\\/"
 
 # Warning: This feature is still experimental. It may not work with some languages.
 auto-detect: false
