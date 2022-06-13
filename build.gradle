@@ -72,7 +72,7 @@ dependencies {
     compileOnly("me.clip:placeholderapi:2.11.1")
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.2")
     compileOnly("org.jetbrains:annotations:23.0.0")
-    slim("com.squareup.okhttp3:okhttp:4.9.3")
+    slim("com.squareup.okhttp3:okhttp:4.10.0")
     slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.7.1")
     slim("mysql:mysql-connector-java:8.0.28")
