@@ -75,7 +75,7 @@ dependencies {
     slim("com.squareup.okhttp3:okhttp:4.9.3")
     slim("com.zaxxer:HikariCP:4.0.3")
     slim("com.github.cryptomorin:XSeries:8.7.1")
-    slim("mysql:mysql-connector-java:8.0.28")
+    slim("mysql:mysql-connector-java:8.0.31")
     slim("org.xerial:sqlite-jdbc:3.36.0.3")
     slim("org.slf4j:slf4j-simple:1.7.36")
 }
