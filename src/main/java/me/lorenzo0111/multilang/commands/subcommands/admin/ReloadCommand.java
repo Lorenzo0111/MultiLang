@@ -69,14 +69,14 @@ public class ReloadCommand extends SubCommand {
 
             if (commandSender instanceof Player) {
                 Player player = (Player) commandSender;
-                XSound.play(player,"ENTITY_EXPERIENCE_ORB_PICKUP");
+                XSound.ENTITY_EXPERIENCE_ORB_PICKUP.play(player);
             }
 
 
             commandSender.sendMessage(this.format(String.format("&7Plugin reloaded in &9%sms", System.currentTimeMillis() - time)));
         } catch (ReloadException | SQLException | IOException | ApiException ex) {
             if (commandSender instanceof Player) {
-                XSound.play((Player) commandSender,"BLOCK_ANVIL_PLACE");
+                XSound.BLOCK_ANVIL_PLACE.play((Player) commandSender);
             }
 
             commandSender.sendMessage(this.format("&7An error has occurred while reloading the plugin. See the console for more information."));
