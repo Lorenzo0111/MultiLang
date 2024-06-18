@@ -62,9 +62,9 @@ repositories {
 
 dependencies {
     implementation('org.bstats:bstats-bukkit:3.0.2')
-    implementation("space.rocketplugins.pluginslib:bukkit:2.0.3.2")
+    implementation("me.lorenzo0111.pluginslib:bukkit:2.0.4")
     implementation("io.github.slimjar:slimjar:1.2.8")
-    implementation('dev.triumphteam:triumph-gui:3.2')
+    implementation('dev.triumphteam:triumph-gui:3.2.2')
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
@@ -80,7 +80,6 @@ dependencies {
 }
 
 slimJar {
-    relocate('dev.triumphteam',"${libsBase}")
     relocate('com.cryptomorin.xseries',"${libsBase}.xseries")
     relocate('com.zaxxer.hikari',"${libsBase}.hikari")
     relocate('okhttp3', "${libsBase}.okhttp")
@@ -88,21 +87,21 @@ slimJar {
 
 shadowJar {
     minimize()
+
     archiveFileName.set("${project.name}-${project.version}.jar")
     relocate("io.github.slimjar","${libsBase}.slimjar")
     relocate("dev.triumphteam","${libsBase}")
     relocate("com.cryptomorin.xseries","${libsBase}.xseries")
     relocate("net.kyori.adventure", "${libsBase}.adventure")
+    relocate("net.kyori.option", "${libsBase}.option")
     relocate("net.kyori.examination", "${libsBase}.examination")
-    relocate("com.google.j2objc", "${libsBase}.google.j2objc")
-    relocate("com.google.common", "${libsBase}.google.common")
-    relocate("com.google.errorprone", "${libsBase}.google.errorprone")
     relocate("org.yaml.snakeyaml", "${libsBase}.yaml")
     relocate("org.spongepowered.configurate", "${libsBase}.configurate")
     relocate("org.bstats", "${libsBase}.bstats")
-    relocate("com.google.gson", "${libsBase}.google.gson")
+    relocate("com.google.j2objc", "${libsBase}.google.j2objc")
+    relocate("com.google.common", "${libsBase}.google.common")
+    relocate("com.google.errorprone", "${libsBase}.google.errorprone")
 }
-
 
 javadoc {
     options.links(
