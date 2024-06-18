@@ -24,7 +24,7 @@
 
 package me.lorenzo0111.multilang.utils;
 
-import com.cryptomorin.xseries.ReflectionUtils;
+import com.cryptomorin.xseries.reflection.XReflection;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
@@ -38,7 +38,7 @@ public final class Reflection {
 
         try {
 
-            if (ReflectionUtils.supports(12)) {
+            if (XReflection.supports(12)) {
                 player.getLocale();
                 return logBefore(player.getLocale(), "Found player locale: %s");
             }

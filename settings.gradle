@@ -22,4 +22,11 @@
  * SOFTWARE.
  */
 
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        maven { url("https://dl.lorenzo0111.me/releases") }
+    }
+}
+
 rootProject.name = "MultiLang"

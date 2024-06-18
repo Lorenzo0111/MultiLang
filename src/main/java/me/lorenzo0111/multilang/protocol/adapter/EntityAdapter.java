@@ -38,7 +38,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -73,8 +72,8 @@ public class EntityAdapter implements Runnable {
         this.runTask(map);
     }
 
-    public void runTask(Multimap<Player,Entity> map) {
-        plugin.customDebug("tasks","Update Task", String.format("Starting to process %s entities..", map.values().size()));
+    public void runTask(Multimap<Player, Entity> map) {
+        plugin.customDebug("tasks", "Update Task", String.format("Starting to process %s entities..", map.values().size()));
 
         for (Map.Entry<Player, Entity> entry : map.entries()) {
             Player player = entry.getKey();
@@ -95,19 +94,13 @@ public class EntityAdapter implements Runnable {
 
             String newName = RegexChecker.replace(player, customName);
 
-            try {
-                WrappedDataWatcher watcher = PacketUtils.renameEntity(entity,newName);
+            WrappedDataWatcher watcher = PacketUtils.renameEntity(entity, newName);
 
-                PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-                packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
-                packet.getIntegers().write(0, entity.getEntityId());
+            PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+            packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
+            packet.getIntegers().write(0, entity.getEntityId());
 
-                ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
-            } catch (InvocationTargetException e) {
-                plugin.getLogger().warning("Unable to rename entity " + entity.getEntityId() + ": " + e.getMessage());
-            }
-
-
+            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
         }
     }
 

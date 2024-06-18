@@ -42,7 +42,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.jetbrains.annotations.NotNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +70,7 @@ public class ChatAdapter extends BaseAdapter {
         }
 
         if (type == null || type.equals(EnumWrappers.ChatType.SYSTEM)) {
-            this.handle(player,component);
+            this.handle(player, component);
         }
 
         packet.getChatComponents().write(0, component);
@@ -109,7 +108,7 @@ public class ChatAdapter extends BaseAdapter {
 
         String text = translators.tryFromCache(p.getLocale(), object.get("text").getAsString());
         if (text != null) {
-            this.update(object,text);
+            this.update(object, text);
         } else {
             event.setCancelled(true);
             this.queue(p, packet.deepClone());
@@ -135,14 +134,10 @@ public class ChatAdapter extends BaseAdapter {
 
                     packet.getChatComponents().write(0, component);
                     Bukkit.getScheduler().runTask(ChatAdapter.this.getPlugin(), () -> {
-                        try {
-                            ignore.add(component.getJson());
+                        ignore.add(component.getJson());
 
-                            ProtocolManager manager = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getProtocol().getManager();
-                            manager.sendServerPacket(p.getPlayer(), packet);
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                        }
+                        ProtocolManager manager = ((MultiLangPlugin) ChatAdapter.this.getPlugin()).getProtocol().getManager();
+                        manager.sendServerPacket(p.getPlayer(), packet);
                     });
                 } catch (Exception e) {
                     e.printStackTrace();

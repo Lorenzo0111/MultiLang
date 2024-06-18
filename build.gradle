@@ -25,12 +25,11 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id "java"
-    id "com.github.johnrengelman.shadow" version "7.1.2"
-    id "net.kyori.indra.publishing" version "2.1.1"
-    id "net.kyori.indra.publishing.sonatype" version "2.1.1"
+    id "com.github.johnrengelman.shadow" version "8.1.1"
+    id "net.kyori.indra.publishing" version "3.1.3"
+    id "net.kyori.indra.publishing.sonatype" version "3.1.3"
     id "signing"
     id "io.github.slimjar" version "1.3.0"
-    id "org.sonarqube" version "3.3"
 }
 
 ext {
@@ -62,28 +61,22 @@ repositories {
 }
 
 dependencies {
-    implementation('org.bstats:bstats-bukkit:3.0.0')
+    implementation('org.bstats:bstats-bukkit:3.0.2')
     implementation("space.rocketplugins.pluginslib:bukkit:2.0.3.2")
-    implementation("io.github.slimjar:slimjar:1.2.7")
+    implementation("io.github.slimjar:slimjar:1.2.8")
     implementation('dev.triumphteam:triumph-gui:3.2')
-    compileOnly("org.spigotmc:spigot-api:1.18-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:4.8.0")
+    compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
-    compileOnly("me.clip:placeholderapi:2.11.1")
-    compileOnly("me.lorenzo0111:RocketPlaceholders:2.2")
-    compileOnly("org.jetbrains:annotations:23.0.0")
-    slim("com.squareup.okhttp3:okhttp:4.9.3")
+    compileOnly("me.clip:placeholderapi:2.11.6")
+    compileOnly("me.lorenzo0111:RocketPlaceholders:2.3")
+    compileOnly("org.jetbrains:annotations:24.1.0")
+    slim("com.squareup.okhttp3:okhttp:4.12.0")
     slim("com.zaxxer:HikariCP:4.0.3")
-    slim("com.github.cryptomorin:XSeries:8.7.1")
-    slim("mysql:mysql-connector-java:8.0.28")
-    slim("org.xerial:sqlite-jdbc:3.36.0.3")
-    slim("org.slf4j:slf4j-simple:1.7.36")
-}
-
-sonarqube {
-    properties {
-        property("sonar.projectKey", "Lorenzo0111_MultiLang")
-    }
+    slim("com.github.cryptomorin:XSeries:11.0.0")
+    slim("com.mysql:mysql-connector-j:8.4.0")
+    slim("org.xerial:sqlite-jdbc:3.46.0.0")
+    slim("org.slf4j:slf4j-simple:2.0.13")
 }
 
 slimJar {
@@ -113,9 +106,8 @@ shadowJar {
 
 javadoc {
     options.links(
-            'https://javadoc.io/static/org.jetbrains/annotations/20.1.0/',
-            'https://docs.oracle.com/javase/8/docs/api/',
-            'https://papermc.io/javadocs/paper/1.16/'
+            'https://javadoc.io/static/org.jetbrains/annotations/24.1.0/',
+            'https://jd.papermc.io/paper/1.20.6'
     )
     source = sourceSets.main.allJava
     include("**/api/*")
