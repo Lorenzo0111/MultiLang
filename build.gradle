@@ -66,7 +66,7 @@ dependencies {
     implementation("io.github.slimjar:slimjar:1.2.8")
     implementation('dev.triumphteam:triumph-gui:3.2.2')
     compileOnly("org.spigotmc:spigot-api:1.21-R0.1-SNAPSHOT")
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
+    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("me.lorenzo0111:RocketPlaceholders:2.3")
