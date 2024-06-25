@@ -29,7 +29,6 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.wrappers.EnumWrappers;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -50,7 +49,7 @@ public class ChatAdapter extends BaseAdapter {
     private final List<String> ignore = new ArrayList<>();
 
     public ChatAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority) {
-        super(plugin, listenerPriority, PacketType.Play.Server.CHAT);
+        super(plugin, listenerPriority, /*PacketType.Play.Server.CHAT, */PacketType.Play.Server.SYSTEM_CHAT);
     }
 
     @Override
@@ -58,8 +57,6 @@ public class ChatAdapter extends BaseAdapter {
         if (event.isCancelled()) return;
         PacketContainer packet = event.getPacket();
         Player player = event.getPlayer();
-
-        EnumWrappers.ChatType type = packet.getChatTypes().read(0);
 
         WrappedChatComponent component = packet.getChatComponents().read(0);
         if (component == null) return;
@@ -69,7 +66,7 @@ public class ChatAdapter extends BaseAdapter {
             return;
         }
 
-        if (type == null || type.equals(EnumWrappers.ChatType.SYSTEM)) {
+        if (packet.getType().equals(PacketType.Play.Server.SYSTEM_CHAT)) {
             this.handle(player, component);
         }
 
@@ -78,27 +75,38 @@ public class ChatAdapter extends BaseAdapter {
         TranslatorConfig translators = ((MultiLangPlugin) this.getPlugin()).getTranslators();
         if (translators.isEnabled()) {
             LocalizedPlayer p = LocalizedPlayer.from(player);
+            String jsonString = component.getJson();
 
-            JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
+            try {
+                JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
 
-
-            if (json.has("text")) {
-                if (!translate(event, packet, translators, p, json)) return;
-            }
-
-            // Iterate "extra", check if it has some text and update it
-            if (json.has("extra")) {
-
-                for (JsonElement element : json.get("extra").getAsJsonArray()) {
-                    JsonObject object = element.getAsJsonObject();
-                    if (!object.has("text")) continue;
-
-                    if (!translate(event, packet, translators, p, object)) return;
+                if (json.has("text")) {
+                    if (!translate(event, packet, translators, p, json)) return;
                 }
 
+                // Iterate "extra", check if it has some text and update it
+                if (json.has("extra")) {
+
+                    for (JsonElement element : json.get("extra").getAsJsonArray()) {
+                        JsonObject object = element.getAsJsonObject();
+                        if (!object.has("text")) continue;
+
+                        if (!translate(event, packet, translators, p, object)) return;
+                    }
+
+                }
+
+                jsonString = json.toString();
+            } catch (Exception ignored) {
+                JsonObject object = new JsonObject();
+                object.addProperty("text", jsonString);
+
+                translate(event, packet, translators, p, object);
+
+                jsonString = object.get("text").getAsString();
             }
 
-            component.setJson(json.toString());
+            component.setJson(jsonString);
         }
 
         packet.getChatComponents().write(0, component);
