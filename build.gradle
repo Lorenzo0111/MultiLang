@@ -69,11 +69,11 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("me.lorenzo0111:RocketPlaceholders:2.3")
+    compileOnly("me.lorenzo0111:RocketPlaceholders:2.3.1")
     compileOnly("org.jetbrains:annotations:24.1.0")
     slim("com.squareup.okhttp3:okhttp:4.12.0")
     slim("com.zaxxer:HikariCP:4.0.3")
-    slim("com.github.cryptomorin:XSeries:11.0.0")
+    slim("com.github.cryptomorin:XSeries:11.1.0")
     slim("com.mysql:mysql-connector-j:8.4.0")
     slim("org.xerial:sqlite-jdbc:3.46.0.0")
     slim("org.slf4j:slf4j-simple:2.0.13")
@@ -92,9 +92,7 @@ shadowJar {
     relocate("io.github.slimjar","${libsBase}.slimjar")
     relocate("dev.triumphteam","${libsBase}")
     relocate("com.cryptomorin.xseries","${libsBase}.xseries")
-    relocate("net.kyori.adventure", "${libsBase}.adventure")
-    relocate("net.kyori.option", "${libsBase}.option")
-    relocate("net.kyori.examination", "${libsBase}.examination")
+    relocate("net.kyori", "${libsBase}.kyori")
     relocate("org.yaml.snakeyaml", "${libsBase}.yaml")
     relocate("org.spongepowered.configurate", "${libsBase}.configurate")
     relocate("org.bstats", "${libsBase}.bstats")
@@ -106,7 +104,7 @@ shadowJar {
 javadoc {
     options.links(
             'https://javadoc.io/static/org.jetbrains/annotations/24.1.0/',
-            'https://jd.papermc.io/paper/1.20.6'
+            'https://jd.papermc.io/paper/1.21'
     )
     source = sourceSets.main.allJava
     include("**/api/*")

@@ -37,7 +37,7 @@ import me.lorenzo0111.multilang.handlers.ConfigManager;
 import me.lorenzo0111.multilang.hooks.Hook;
 import me.lorenzo0111.multilang.listeners.JoinListener;
 import me.lorenzo0111.multilang.protocol.PacketHandler;
-import me.lorenzo0111.multilang.realtime.RealTimeTranslator;
+import me.lorenzo0111.multilang.realtime.GoogleTranslator;
 import me.lorenzo0111.multilang.realtime.TranslatorConfig;
 import me.lorenzo0111.multilang.storage.StorageManager;
 import me.lorenzo0111.multilang.tasks.UpdateTask;
@@ -372,8 +372,8 @@ public final class MultiLangPlugin extends JavaPlugin {
 
         translators = new TranslatorConfig();
         translators.canRegister(true);
-        translators.registerTranslator("realtime", new RealTimeTranslator(this.getConfig().getString("real-time.key")));
-        translators.setInUse("realtime");
+        translators.registerTranslator("google", new GoogleTranslator());
+        translators.setInUse("google");
         translators.setEnabled(this.getConfig().getBoolean("real-time.enabled"));
         translators.setUseCache(this.getConfig().getBoolean("real-time.cache"));
         translators.setPatterns(this.getConfig().getStringList("real-time.ignore"));

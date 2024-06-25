@@ -1,24 +1,24 @@
 package me.lorenzo0111.multilang.realtime;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.ITranslator;
 import me.lorenzo0111.multilang.utils.RegexChecker;
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
-public class RealTimeTranslator implements ITranslator {
-    private final String api;
+public class GoogleTranslator implements ITranslator {
     private final OkHttpClient client;
-    private final MediaType mediaType = MediaType.parse("application/json");
 
-    public RealTimeTranslator(String api) {
-        this.api = api;
-        this.client = new OkHttpClient().newBuilder()
+    public GoogleTranslator() {
+        this.client = new OkHttpClient()
+                .newBuilder()
                 .build();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public String translate(String text, String language) {
         if (RegexChecker.isUrl(text)) {
@@ -32,28 +32,27 @@ public class RealTimeTranslator implements ITranslator {
         MultiLangPlugin.getInstance().debug("Translating: " + text + " to " + language);
 
         try {
-            JsonObject object = new JsonObject();
-            object.addProperty("text", text);
-            object.addProperty("to", language);
-
-            RequestBody body = RequestBody.create(object.toString(), mediaType);
             Request request = new Request.Builder()
-                    .url("https://multilang.lorenzo0111.me/api/translate")
-                    .method("POST", body)
-                    .addHeader("authorization", api)
-                    .addHeader("Content-Type", "application/json")
+                    .url("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" +
+                            language +
+                            "&dt=t&dj=1&source=input&q=" + text)
+                    .get()
                     .build();
 
             Response response = client.newCall(request).execute();
 
             JsonObject json = new JsonParser().parse(response.body().string()).getAsJsonObject();
-            if (json.has("error")) {
-                MultiLangPlugin.getInstance().getLogger().severe("RealTime server returned an error: " + json.get("error").getAsString());
+            if (!json.has("sentences")) {
+                MultiLangPlugin.getInstance().getLogger().severe("Google Translate did not return a correct response.");
                 return null;
-            } else if (json.has("text")) {
-                MultiLangPlugin.getInstance().debug("Request returned: " + json.get("text").getAsString());
-                return json.get("text").getAsString();
             }
+
+            JsonArray sentences = json.getAsJsonArray("sentences");
+            JsonObject result = sentences.get(0).getAsJsonObject();
+            String trans = result.get("trans").getAsString();
+
+            MultiLangPlugin.getInstance().debug("Request returned: " + trans);
+            return trans;
         } catch (Exception e) {
             e.printStackTrace();
         }

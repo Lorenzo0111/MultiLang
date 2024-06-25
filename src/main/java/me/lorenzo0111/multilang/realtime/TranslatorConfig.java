@@ -133,6 +133,7 @@ public class TranslatorConfig {
     public boolean testConnection() {
         if (!isEnabled || inUse == null) return true;
 
+        MultiLangPlugin.getInstance().debug("Testing connection with " + inUse + " translator");
         return translators.get(inUse).testConnection();
     }
 

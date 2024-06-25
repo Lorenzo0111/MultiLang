@@ -81,6 +81,7 @@ public class ChatAdapter extends BaseAdapter {
 
             JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
 
+
             if (json.has("text")) {
                 if (!translate(event, packet, translators, p, json)) return;
             }
