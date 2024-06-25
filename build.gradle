@@ -69,7 +69,7 @@ dependencies {
     compileOnly("com.comphenix.protocol:ProtocolLib:5.0.0")
     compileOnly("com.github.MilkBowl:VaultAPI:1.7.1")
     compileOnly("me.clip:placeholderapi:2.11.6")
-    compileOnly("me.lorenzo0111:RocketPlaceholders:2.3")
+    compileOnly("me.lorenzo0111:RocketPlaceholders:2.3.1")
     compileOnly("org.jetbrains:annotations:24.1.0")
     slim("com.squareup.okhttp3:okhttp:4.12.0")
     slim("com.zaxxer:HikariCP:4.0.3")
