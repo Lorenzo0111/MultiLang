@@ -76,7 +76,7 @@ dependencies {
     slim("com.github.cryptomorin:XSeries:11.0.0")
     slim("com.mysql:mysql-connector-j:8.4.0")
     slim("org.xerial:sqlite-jdbc:3.46.0.0")
-    slim("org.slf4j:slf4j-simple:2.0.13")
+    slim("org.slf4j:slf4j-simple:2.0.16")
 }
 
 slimJar {
