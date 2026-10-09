@@ -32,6 +32,7 @@ import me.lorenzo0111.multilang.protocol.adapter.BossBarAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.ChatAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.EntityAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.InventoryAdapter;
+import me.lorenzo0111.multilang.protocol.adapter.ItemAdapter;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitScheduler;
@@ -58,6 +59,7 @@ public class PacketHandler {
         tasks.add(entityTask);
 
         listeners.add(new InventoryAdapter(plugin, ListenerPriority.NORMAL));
+        listeners.add(new ItemAdapter(plugin, ListenerPriority.NORMAL));
         ChatAdapter chatAdapter = new ChatAdapter(plugin, ListenerPriority.NORMAL);
         plugin.getServer().getPluginManager().registerEvents(chatAdapter, plugin);
         listeners.add(chatAdapter);
