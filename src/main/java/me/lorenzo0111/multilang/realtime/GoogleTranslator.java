@@ -1,14 +1,17 @@
 package me.lorenzo0111.multilang.realtime;
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import me.lorenzo0111.multilang.MultiLangPlugin;
 import me.lorenzo0111.multilang.api.objects.ITranslator;
 import me.lorenzo0111.multilang.utils.RegexChecker;
+import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+
+import java.util.concurrent.TimeUnit;
 
 public class GoogleTranslator implements ITranslator {
     private final OkHttpClient client;
@@ -16,6 +19,9 @@ public class GoogleTranslator implements ITranslator {
     public GoogleTranslator() {
         this.client = new OkHttpClient()
                 .newBuilder()
+                // Chat messages wait for the translation, so a slow response must not hold them for long
+                .connectTimeout(3, TimeUnit.SECONDS)
+                .callTimeout(5, TimeUnit.SECONDS)
                 .build();
     }
 
@@ -32,24 +38,47 @@ public class GoogleTranslator implements ITranslator {
         MultiLangPlugin.getInstance().debug("Translating: " + text + " to " + language);
 
         try {
+            HttpUrl url = new HttpUrl.Builder()
+                    .scheme("https")
+                    .host("translate.googleapis.com")
+                    .addPathSegments("translate_a/single")
+                    .addQueryParameter("client", "gtx")
+                    .addQueryParameter("sl", "auto")
+                    .addQueryParameter("tl", language)
+                    .addQueryParameter("dt", "t")
+                    .addQueryParameter("dj", "1")
+                    .addQueryParameter("source", "input")
+                    .addQueryParameter("q", text)
+                    .build();
+
             Request request = new Request.Builder()
-                    .url("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=" +
-                            language +
-                            "&dt=t&dj=1&source=input&q=" + text)
+                    .url(url)
                     .get()
                     .build();
 
-            Response response = client.newCall(request).execute();
+            JsonObject json;
+            try (Response response = client.newCall(request).execute()) {
+                json = new JsonParser().parse(response.body().string()).getAsJsonObject();
+            }
 
-            JsonObject json = new JsonParser().parse(response.body().string()).getAsJsonObject();
             if (!json.has("sentences")) {
                 MultiLangPlugin.getInstance().getLogger().severe("Google Translate did not return a correct response.");
                 return null;
             }
 
-            JsonArray sentences = json.getAsJsonArray("sentences");
-            JsonObject result = sentences.get(0).getAsJsonObject();
-            String trans = result.get("trans").getAsString();
+            // Google splits the text in sentences, each one with its own translation
+            StringBuilder builder = new StringBuilder();
+            for (JsonElement sentence : json.getAsJsonArray("sentences")) {
+                JsonObject result = sentence.getAsJsonObject();
+                if (result.has("trans")) builder.append(result.get("trans").getAsString());
+            }
+
+            if (builder.length() == 0) {
+                MultiLangPlugin.getInstance().debug("Request returned no translation. Returning null");
+                return null;
+            }
+
+            String trans = builder.toString();
 
             MultiLangPlugin.getInstance().debug("Request returned: " + trans);
             return trans;
