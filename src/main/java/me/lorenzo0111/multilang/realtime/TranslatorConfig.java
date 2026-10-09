@@ -118,7 +118,7 @@ public class TranslatorConfig {
         if (!useCache) return null;
 
         LocalizedString localizedString = cache.get(ChatColor.stripColor(text));
-        MultiLangPlugin.getInstance().debug(localizedString);
+        MultiLangPlugin.getInstance().debug("String from cache for " + text +  " is " + localizedString);
         if (localizedString != null) {
             String translation = localizedString.getLocales().get(locale);
             if (translation != null) {

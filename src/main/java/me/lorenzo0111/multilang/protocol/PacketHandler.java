@@ -32,6 +32,8 @@ import me.lorenzo0111.multilang.protocol.adapter.BossBarAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.ChatAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.EntityAdapter;
 import me.lorenzo0111.multilang.protocol.adapter.InventoryAdapter;
+import org.bukkit.event.HandlerList;
+import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitScheduler;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -56,7 +58,9 @@ public class PacketHandler {
         tasks.add(entityTask);
 
         listeners.add(new InventoryAdapter(plugin, ListenerPriority.NORMAL));
-        listeners.add(new ChatAdapter(plugin, ListenerPriority.NORMAL));
+        ChatAdapter chatAdapter = new ChatAdapter(plugin, ListenerPriority.NORMAL);
+        plugin.getServer().getPluginManager().registerEvents(chatAdapter, plugin);
+        listeners.add(chatAdapter);
         listeners.add(new BossBarAdapter(plugin, ListenerPriority.NORMAL));
 
         listeners.forEach(manager::addPacketListener);
@@ -64,6 +68,7 @@ public class PacketHandler {
 
     public void unload() {
         listeners.forEach(manager::removePacketListener);
+        listeners.stream().filter(Listener.class::isInstance).forEach(listener -> HandlerList.unregisterAll((Listener) listener));
         tasks.forEach(BukkitTask::cancel);
     }
 

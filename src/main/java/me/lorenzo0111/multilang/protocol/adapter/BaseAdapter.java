@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseAdapter extends PacketAdapter {
 
-    public BaseAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority, PacketType type) {
+    public BaseAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority, PacketType... type) {
         super(plugin, listenerPriority, type);
     }
 
@@ -23,25 +23,29 @@ public abstract class BaseAdapter extends PacketAdapter {
     }
 
     public void updateTexts(@NotNull WrappedChatComponent component, StringEditor action) {
-        JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
+        try {
+            JsonObject json = new JsonParser().parse(component.getJson()).getAsJsonObject();
 
-        if (json.has("text")) {
-            this.update(json,action.edit(json.get("text").getAsString()));
-        }
-
-        // Iterate "extra", check if it has some text and update it
-        if (json.has("extra")) {
-
-            for (JsonElement element : json.get("extra").getAsJsonArray()) {
-                JsonObject object = element.getAsJsonObject();
-                if (!object.has("text")) continue;
-
-                this.update(object,action.edit(object.get("text").getAsString()));
+            if (json.has("text")) {
+                this.update(json,action.edit(json.get("text").getAsString()));
             }
 
-        }
+            // Iterate "extra", check if it has some text and update it
+            if (json.has("extra")) {
 
-        component.setJson(json.toString());
+                for (JsonElement element : json.get("extra").getAsJsonArray()) {
+                    JsonObject object = element.getAsJsonObject();
+                    if (!object.has("text")) continue;
+
+                    this.update(object,action.edit(object.get("text").getAsString()));
+                }
+
+            }
+
+            component.setJson(json.toString());
+        } catch (IllegalStateException e) {
+            component.setJson(action.edit(component.getJson()));
+        }
     }
 
     protected void update(@NotNull JsonObject object, String value) {
