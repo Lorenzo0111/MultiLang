@@ -62,7 +62,7 @@ repositories {
 
 dependencies {
     implementation('org.bstats:bstats-bukkit:3.2.1')
-    implementation("me.lorenzo0111.pluginslib:bukkit:2.0.4")
+    implementation("me.lorenzo0111.pluginslib:bukkit:2.0.6")
     implementation("me.lorenzo0111:slimjar:1.3.0")
     implementation('dev.triumphteam:triumph-gui:3.2.2')
     compileOnly("org.spigotmc:spigot-api:1.21.11-R0.2-SNAPSHOT")

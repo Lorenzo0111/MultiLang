@@ -84,7 +84,7 @@ public class TranslatorConfig {
             return null;
         }
 
-        if (RegexChecker.contains(text, patterns)) {
+        if (text == null || text.trim().isEmpty() || RegexChecker.contains(text, patterns)) {
             return null;
         }
 
@@ -95,7 +95,7 @@ public class TranslatorConfig {
             }
         }
 
-        String string = this.translators.get(inUse).translate(text, locale.getLocaleID());
+        String string = keepWhitespace(text, this.translators.get(inUse).translate(text, locale.getLocaleID()));
         if (useCache && string != null) {
             String newText = ChatColor.stripColor(text);
 
@@ -123,11 +123,24 @@ public class TranslatorConfig {
             String translation = localizedString.getLocales().get(locale);
             if (translation != null) {
                 MultiLangPlugin.getInstance().debug("Using cached translation for " + text + " in " + locale.getLocaleID() + ": " + translation);
-                return translation;
+                return keepWhitespace(text, translation);
             }
         }
 
         return null;
+    }
+
+    // Translators trim the text, but components rely on surrounding spaces to separate each other
+    private static @Nullable String keepWhitespace(@NotNull String original, @Nullable String translation) {
+        if (translation == null) return null;
+
+        int start = 0;
+        while (start < original.length() && Character.isWhitespace(original.charAt(start))) start++;
+
+        int end = original.length();
+        while (end > start && Character.isWhitespace(original.charAt(end - 1))) end--;
+
+        return original.substring(0, start) + translation.trim() + original.substring(end);
     }
 
     public boolean testConnection() {

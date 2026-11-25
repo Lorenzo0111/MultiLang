@@ -29,6 +29,8 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.reflect.accessors.FieldAccessor;
+import com.comphenix.protocol.utility.MinecraftReflection;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -49,17 +51,21 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class ChatAdapter extends BaseAdapter implements Listener {
     private static final List<BukkitRunnable> TASKS = new ArrayList<>();
     private final Map<String, Map<Locale, String>> signed = new ConcurrentHashMap<>();
     private Field signedContent;
+    private Integer unsignedContent;
 
     public ChatAdapter(MultiLangPlugin plugin, ListenerPriority listenerPriority) {
         super(plugin, listenerPriority, supportedTypes());
@@ -172,14 +178,39 @@ public class ChatAdapter extends BaseAdapter implements Listener {
         String text = translations.get(LocalizedPlayer.from(player).getLocale());
         if (text == null || text.equals(content)) return;
 
-        WrappedChatComponent component = packet.getChatComponents().readSafely(0);
-        if (component == null) {
-            component = WrappedChatComponent.fromText(text);
-        } else {
+        int index = this.findUnsignedContent(packet);
+        if (index == -1) return;
+
+        Optional<?> current = (Optional<?>) packet.getModifier().read(index);
+        WrappedChatComponent component;
+        if (current != null && current.isPresent()) {
+            component = WrappedChatComponent.fromHandle(current.get());
             this.updateTexts(component, (value) -> value.equals(content) ? text : value);
+        } else {
+            component = WrappedChatComponent.fromText(text);
         }
 
-        packet.getChatComponents().write(0, component);
+        packet.getModifier().write(index, Optional.of(component.getHandle()));
+    }
+
+    private int findUnsignedContent(@NotNull PacketContainer packet) {
+        if (unsignedContent != null) return unsignedContent;
+
+        Class<?> componentClass = MinecraftReflection.getIChatBaseComponentClass();
+        List<FieldAccessor> fields = packet.getModifier().getFields();
+        for (int i = 0; i < fields.size(); i++) {
+            Field field = fields.get(i).getField();
+            if (!field.getType().equals(Optional.class)) continue;
+            if (!(field.getGenericType() instanceof ParameterizedType)) continue;
+
+            Type argument = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+            if (argument instanceof Class && componentClass.isAssignableFrom((Class<?>) argument)) {
+                return unsignedContent = i;
+            }
+        }
+
+        ((MultiLangPlugin) this.getPlugin()).debug("Unable to find the unsigned content of the chat packet");
+        return unsignedContent = -1;
     }
 
     private @Nullable String readSignedContent(@NotNull PacketContainer packet) {
