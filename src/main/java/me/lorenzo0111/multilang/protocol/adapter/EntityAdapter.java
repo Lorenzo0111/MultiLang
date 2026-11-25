@@ -24,10 +24,8 @@
 
 package me.lorenzo0111.multilang.protocol.adapter;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
 import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import com.google.common.collect.LinkedHashMultimap;
 import com.google.common.collect.Multimap;
 import me.lorenzo0111.multilang.MultiLangPlugin;
@@ -40,11 +38,13 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.stream.Collectors;
 
 public class EntityAdapter implements Runnable {
     private final MultiLangPlugin plugin;
     private static EntityAdapter instance;
+    private volatile boolean failed;
 
     public EntityAdapter(MultiLangPlugin plugin) {
         this.plugin = plugin;
@@ -94,13 +94,21 @@ public class EntityAdapter implements Runnable {
 
             String newName = RegexChecker.replace(player, customName);
 
-            WrappedDataWatcher watcher = PacketUtils.renameEntity(entity, newName);
+            if (newName.equals(customName)) continue;
 
-            PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
-            packet.getWatchableCollectionModifier().write(0, watcher.getWatchableObjects());
-            packet.getIntegers().write(0, entity.getEntityId());
+            try {
+                PacketContainer packet = PacketUtils.renameEntity(entity, newName);
 
-            ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+                ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+            } catch (Exception e) {
+                if (!failed) {
+                    failed = true;
+                    plugin.getLogger().log(Level.WARNING, "Unable to translate the name of an entity", e);
+                    continue;
+                }
+
+                plugin.debug("Unable to translate the name of entity " + entity.getEntityId() + ": " + e);
+            }
         }
     }
 

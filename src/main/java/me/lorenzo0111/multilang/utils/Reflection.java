@@ -38,7 +38,7 @@ public final class Reflection {
 
         try {
 
-            if (XReflection.supports(12)) {
+            if (XReflection.supports(1, 12)) {
                 player.getLocale();
                 return logBefore(player.getLocale(), "Found player locale: %s");
             }

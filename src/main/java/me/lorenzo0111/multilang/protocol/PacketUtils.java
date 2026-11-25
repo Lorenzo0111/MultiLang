@@ -24,22 +24,46 @@
 
 package me.lorenzo0111.multilang.protocol;
 
+import com.comphenix.protocol.PacketType;
+import com.comphenix.protocol.ProtocolLibrary;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.utility.MinecraftVersion;
 import com.comphenix.protocol.wrappers.WrappedChatComponent;
+import com.comphenix.protocol.wrappers.WrappedDataValue;
 import com.comphenix.protocol.wrappers.WrappedDataWatcher;
 import org.bukkit.entity.Entity;
 
+import java.util.Collections;
 import java.util.Optional;
 
 public final class PacketUtils {
+    private static final int CUSTOM_NAME_INDEX = 2;
 
-    public static WrappedDataWatcher renameEntity(Entity entity, String name) {
-        WrappedDataWatcher dataWatcher = WrappedDataWatcher.getEntityWatcher(entity).deepClone();
-        WrappedDataWatcher.Serializer chatSerializer = WrappedDataWatcher.Registry.getChatComponentSerializer(true);
-        WrappedDataWatcher.WrappedDataWatcherObject watcherObject = new WrappedDataWatcher.WrappedDataWatcherObject(2, chatSerializer);
-        Optional<Object> optional = Optional.of(WrappedChatComponent.fromChatMessage(name)[0].getHandle());
-        dataWatcher.setObject(watcherObject, optional);
-        dataWatcher.setObject(3, true);
+    public static PacketContainer renameEntity(Entity entity, String name) {
+        WrappedDataWatcher.Serializer serializer;
+        Object value;
 
-        return dataWatcher;
+        // Before 1.13 the custom name is a plain string and not a chat component
+        if (MinecraftVersion.AQUATIC_UPDATE.atOrAbove()) {
+            serializer = WrappedDataWatcher.Registry.getChatComponentSerializer(true);
+            value = Optional.of(WrappedChatComponent.fromChatMessage(name)[0].getHandle());
+        } else {
+            serializer = WrappedDataWatcher.Registry.get(String.class);
+            value = name;
+        }
+
+        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.ENTITY_METADATA);
+        packet.getIntegers().write(0, entity.getEntityId());
+
+        // Only the custom name is sent, so that the other metadata (like the name visibility) is left untouched
+        if (MinecraftVersion.FEATURE_PREVIEW_UPDATE.atOrAbove()) {
+            packet.getDataValueCollectionModifier().write(0, Collections.singletonList(new WrappedDataValue(CUSTOM_NAME_INDEX, serializer, value)));
+        } else {
+            WrappedDataWatcher dataWatcher = new WrappedDataWatcher();
+            dataWatcher.setObject(new WrappedDataWatcher.WrappedDataWatcherObject(CUSTOM_NAME_INDEX, serializer), value);
+            packet.getWatchableCollectionModifier().write(0, dataWatcher.getWatchableObjects());
+        }
+
+        return packet;
     }
 }
